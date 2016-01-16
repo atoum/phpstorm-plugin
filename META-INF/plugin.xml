@@ -1,0 +1,51 @@
+<idea-plugin version="2">
+  <id>com.atoum.phpstormplugin</id>
+  <name>atoum plugin</name>
+  <version>1.0</version>
+  <vendor email="adriengallou@gmail.com">Adrien Gallou</vendor>
+
+  <description><![CDATA[
+      Integrate atoum in PHPStorm.
+    ]]></description>
+
+  <change-notes><![CDATA[
+      CHANGELOG.
+    ]]>
+  </change-notes>
+
+  <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Build+Number+Ranges for description -->
+  <idea-version since-build="131"/>
+
+  <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
+       on how to target different products -->
+  <!-- uncomment to enable plugin in all products
+  <depends>com.intellij.modules.lang</depends>
+  -->
+
+  <extensions defaultExtensionNs="com.intellij">*
+    <!-- Add your extensions here -->
+  </extensions>
+
+  <application-components>
+    <!-- Add your application components here -->
+  </application-components>
+
+  <project-components>
+    <!-- Add your project components here -->
+  </project-components>
+
+  <actions>
+    <!-- Add your actions here -->
+    <action id="OpenSpecForClass" class="pl.projectspace.idea.plugins.php.atoum.actions.AtoumSwitchContext"
+            icon="/pl/projectspace/idea/plugins/php/atoum/icons/atoum_16_16.png"
+            text="Go to atoum test">
+      <add-to-group group-id="GoToCodeGroup" anchor="last"/>
+      <add-to-group group-id="EditorPopupMenu.GoTo" anchor="last"/>
+    </action>
+  </actions>
+
+
+  <depends>com.jetbrains.php</depends>
+  <depends>com.intellij.modules.platform</depends>
+
+</idea-plugin>
