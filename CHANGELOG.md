@@ -1,5 +1,7 @@
 # `dev-master`
 
+# 0.2.0 - 2016-01-17
+
 ## Features
 
 * [#3](https://github.com/agallou/phpstorm-plugin/pull/3) Update switch to go from test to tested class ([@agallou])
