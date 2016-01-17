@@ -148,7 +148,7 @@ public class AtoumRunTests extends AnAction {
         }
 
         if (!Utils.isClassAtoumTest(currentClass)) {
-            return null;
+            return Utils.locateTestClass(e.getProject(), currentClass);
         }
 
         return currentClass;
