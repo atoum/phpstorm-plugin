@@ -32,6 +32,10 @@ Integrates atoum into PhpStorm
 
 ![Demo](doc/run.png)
 
+* You can run the tests from both the test file or the tested classe's file
+
+![Demo](doc/run_from_tested_class.png)
+
 ## Installation
 
 * Download the lasted version of the `.jar` on the [releases pages](https://github.com/agallou/phpstorm-plugin/releases)
