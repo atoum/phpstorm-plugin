@@ -16,19 +16,19 @@ public class AtoumSwitchContext extends AnAction {
     public void update(AnActionEvent e) {
         e.getPresentation().setEnabled(false);
         e.getPresentation().setVisible(true);
-        e.getPresentation().setText("Go to atoum test");
+        e.getPresentation().setText("atoum - switch to");
 
-        PhpClass testedClass = getTestedClass(e);
+        PhpClass testedClass = getSwitchClass(e);
         if (null == testedClass) {
             return;
         }
 
-        e.getPresentation().setText("Go to atoum test : " + testedClass.getFQN());
+        e.getPresentation().setText("atoum - switch to : " + testedClass.getFQN());
         e.getPresentation().setEnabled(true);
     }
 
     public void actionPerformed(final AnActionEvent e) {
-        PhpClass testedClass = getTestedClass(e);
+        PhpClass testedClass = getSwitchClass(e);
         if (null == testedClass) {
             return;
         }
@@ -36,41 +36,72 @@ public class AtoumSwitchContext extends AnAction {
     }
 
     @Nullable
-    protected PhpClass getTestedClass(final AnActionEvent e) {
+    protected PhpClass getSwitchClass(final AnActionEvent e) {
         Object psiFile = e.getData(PlatformDataKeys.PSI_FILE);
 
         if (null == psiFile) {
             return null;
         }
 
-        if (psiFile instanceof PhpFile) {
-            PhpFile phpFile = ((PhpFile) psiFile);
-            PhpClass testedClass = getTestedClass(e.getProject(), phpFile);
-            if (null == testedClass) {
-                return null;
-            }
+        if (!(psiFile instanceof PhpFile)) {
+            return null;
+        }
+        PhpFile phpFile = ((PhpFile) psiFile);
+        PhpClass testedClass = getSwitchClass(e.getProject(), phpFile);
 
-            return testedClass;
+        if (null == testedClass) {
+            return null;
         }
 
-        return null;
+        return testedClass;
     }
 
     @Nullable
-    protected PhpClass getTestedClass(Project project, PhpFile phpFile) {
+    protected PhpClass getSwitchClass(Project project, PhpFile phpFile) {
         PhpClass currentClass = getFirstClassFromFile(phpFile);
         if (null == currentClass) {
             return null;
         }
 
-        String testedClassname = currentClass.getNamespaceName() + "tests\\units\\" + currentClass.getName();
-        Collection<PhpClass> phpClasses = PhpIndex.getInstance(project).getAnyByFQN(testedClassname);
-        if (phpClasses.size() == 1) {
-            PhpClass testedClass = (PhpClass)phpClasses.toArray()[0];
-            return testedClass;
+        if (isClassAtoumTest(currentClass)) {
+            return locateTestedClass(project, currentClass);
         }
 
-        return null;
+        return locateTestClass(project, currentClass);
+    }
+
+    protected Boolean isClassAtoumTest(PhpClass checkedClass)
+    {
+        return checkedClass.getNamespaceName().endsWith(getTestsNamespaceSuffix());
+    }
+
+    @Nullable
+    protected PhpClass locateTestClass(Project project, PhpClass testedClass) {
+        String testClassname = testedClass.getNamespaceName() + getTestsNamespaceSuffix() + testedClass.getName();
+        return locatePhpClass(project, testClassname);
+    }
+
+    @Nullable
+    protected PhpClass locateTestedClass(Project project, PhpClass testClass) {
+        String testClassNamespaceName = testClass.getNamespaceName();
+        String testedClassname = testClassNamespaceName.substring(0, testClassNamespaceName.length() - getTestsNamespaceSuffix().length()) + testClass.getName();
+        return locatePhpClass(project, testedClassname);
+
+    }
+
+    @Nullable
+    protected PhpClass locatePhpClass(Project project, String name) {
+        Collection<PhpClass> phpClasses = PhpIndex.getInstance(project).getAnyByFQN(name);
+        if (phpClasses.size() != 1) {
+            return null;
+        }
+
+        return (PhpClass)phpClasses.toArray()[0];
+    }
+
+    private String getTestsNamespaceSuffix()
+    {
+        return "tests\\units\\";
     }
 
     //https://github.com/Haehnchen/idea-php-symfony2-plugin/blob/cb422db9779025d65fdf0ba5d26a38d401eca939/src/fr/adrienbrault/idea/symfony2plugin/util/PhpElementsUtil.java#L784
