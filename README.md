@@ -25,6 +25,15 @@ Integrates atoum into PHPStorm
 
 ![Demo](doc/switch_back-right_click.png)
 
+
+## Installation
+
+* Download the lasted version of the `.jar` on the [releases pages](https://github.com/agallou/phpstorm-plugin/releases)
+* Open PhpStorm
+* Go to `File -> Settings`, then click on `Plugins`
+* Click on the `install from disk` button, then select to downloaded jar
+* Restart PhpStorm
+
 ## Links
 
 * [PhpStorm](https://www.jetbrains.com/phpstorm/)
