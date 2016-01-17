@@ -26,6 +26,12 @@ Integrates atoum into PhpStorm
 ![Demo](doc/switch_back-right_click.png)
 
 
+### Execute test inside PhpStorm
+
+* By an entry on the run menu and on the right click menu
+
+![Demo](doc/run.png)
+
 ## Installation
 
 * Download the lasted version of the `.jar` on the [releases pages](https://github.com/agallou/phpstorm-plugin/releases)
