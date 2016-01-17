@@ -1,5 +1,8 @@
 # `dev-master`
 
+
+# 0.3.0 - 2016-01-17
+
 ## Features
 
 * [#13](https://github.com/agallou/phpstorm-plugin/pull/13) Add actions to run the current test ([@agallou])
