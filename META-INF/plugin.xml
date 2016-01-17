@@ -38,7 +38,7 @@
     <!-- Add your actions here -->
     <action id="OpenSpecForClass" class="pl.projectspace.idea.plugins.php.atoum.actions.AtoumSwitchContext"
             icon="/pl/projectspace/idea/plugins/php/atoum/icons/atoum_16_16.png"
-            text="Go to atoum test">
+            text="Swicth to test class / tested class">
       <add-to-group group-id="GoToCodeGroup" anchor="last"/>
       <add-to-group group-id="EditorPopupMenu.GoTo" anchor="last"/>
     </action>
