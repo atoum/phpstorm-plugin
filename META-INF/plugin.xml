@@ -22,7 +22,8 @@
   <depends>com.intellij.modules.lang</depends>
   -->
 
-  <extensions defaultExtensionNs="com.intellij">*
+  <extensions defaultExtensionNs="com.intellij">
+    <codeInsight.lineMarkerProvider language="PHP" implementationClass="pl.projectspace.idea.plugins.php.atoum.actions.ClassLineMarkerProvider" />
     <!-- Add your extensions here -->
   </extensions>
 
