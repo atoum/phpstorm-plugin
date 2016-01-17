@@ -30,3 +30,7 @@ Integrates atoum into PHPStorm
 * [PhpStorm](https://www.jetbrains.com/phpstorm/)
 * [atoum](http://atoum.org)
 * [atoum's documentation](http://docs.atoum.org)
+
+## Licence
+
+atoum phpstorm-plugin is released under the MIT License. See the bundled LICENSE file for details.
