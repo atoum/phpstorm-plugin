@@ -8,6 +8,10 @@
 
 * [#4](https://github.com/agallou/phpstorm-plugin/pull/4) Fix version number ([@agallou])
 
+## Documentation
+
+* [#7](https://github.com/agallou/phpstorm-plugin/pull/7) Add installation instructions ([@agallou])
+
 # 0.1.0 - 2016-01-16
 
 * Menu entry to go to the test class from the tested class
