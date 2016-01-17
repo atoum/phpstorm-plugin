@@ -23,6 +23,8 @@
 
 # 0.1.0 - 2016-01-16
 
+## Features
+
 * Menu entry to go to the test class from the tested class
 
 
