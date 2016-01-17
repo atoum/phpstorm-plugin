@@ -1,6 +1,6 @@
-# atoum PHPStorm Plugin
+# atoum PhpStorm Plugin
 
-Integrates atoum into PHPStorm
+Integrates atoum into PhpStorm
 
 ## Features
 
