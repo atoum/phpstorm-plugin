@@ -1,5 +1,7 @@
 # `dev-master`
 
+# 0.4.0 - 2016-01-18
+
 ## Features
 
 * [#15](https://github.com/agallou/phpstorm-plugin/pull/15) Add an icon on the left of the classes to go to the test class or tested class ([@agallou])
