@@ -14,6 +14,10 @@ Integrates atoum into PhpStorm
 
 ![Demo](doc/switch-right_click.png)
 
+* Or by clicking on the icon on the left of the class
+
+![Demo](doc/switch-icon.png)
+
 
 ### Go to the tested class from the test class
 
@@ -24,6 +28,10 @@ Integrates atoum into PhpStorm
 * Or by an entry bin the right click menu
 
 ![Demo](doc/switch_back-right_click.png)
+
+* Or by clicking on the icon on the left of the class
+
+![Demo](doc/switch_back-icon.png)
 
 
 ### Execute test inside PhpStorm
