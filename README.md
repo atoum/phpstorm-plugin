@@ -27,5 +27,6 @@ Integrates atoum into PHPStorm
 
 ## Links
 
+* [PhpStorm](https://www.jetbrains.com/phpstorm/)
 * [atoum](http://atoum.org)
 * [atoum's documentation](http://docs.atoum.org)
