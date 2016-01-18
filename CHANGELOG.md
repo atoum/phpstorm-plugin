@@ -1,5 +1,9 @@
 # `dev-master`
 
+## Bugfix
+
+* [#17](https://github.com/agallou/phpstorm-plugin/pull/17) Fix navigation to the tested class if the suffix is not at the end of the namespace ([@agallou])
+
 # 0.4.0 - 2016-01-18
 
 ## Features
