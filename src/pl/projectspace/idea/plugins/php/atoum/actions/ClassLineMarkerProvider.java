@@ -37,23 +37,23 @@ public class ClassLineMarkerProvider implements com.intellij.codeInsight.daemon.
     }
 
     private void classNameMarker(PhpClass currentClass, Collection<? super RelatedItemLineMarkerInfo> result, Project project) {
-        PhpClass target;
+        Collection<PhpClass> target;
         String tooltip;
 
         if (Utils.isClassAtoumTest(currentClass)) {
-            target = Utils.locateTestedClass(project, currentClass);
+            target = Utils.locateTestedClasses(project, currentClass);
             tooltip = "Navigate to tested class";
         } else {
-            target = Utils.locateTestClass(project, currentClass);
+            target = Utils.locateTestClasses(project, currentClass);
             tooltip = "Navigate to test";
         }
 
-        if (target == null) {
+        if (target.size() == 0) {
             return;
         }
 
         NavigationGutterIconBuilder<PsiElement> builder = NavigationGutterIconBuilder.create(Icons.ATOUM).
-                setTarget(target).
+                setTargets(target).
                 setTooltipText(tooltip);
         result.add(builder.createLineMarkerInfo(currentClass));
     }
