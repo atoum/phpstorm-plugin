@@ -13,7 +13,7 @@ public class Utils {
 
     public static Boolean isClassAtoumTest(PhpClass checkedClass)
     {
-        return checkedClass.getNamespaceName().endsWith(getTestsNamespaceSuffix());
+        return checkedClass.getNamespaceName().contains(getTestsNamespaceSuffix());
     }
 
     @Nullable
@@ -25,7 +25,7 @@ public class Utils {
     @Nullable
     public static PhpClass locateTestedClass(Project project, PhpClass testClass) {
         String testClassNamespaceName = testClass.getNamespaceName();
-        String testedClassname = testClassNamespaceName.substring(0, testClassNamespaceName.length() - getTestsNamespaceSuffix().length()) + testClass.getName();
+        String testedClassname = testClassNamespaceName.replace(getTestsNamespaceSuffix(), "") + testClass.getName();
         return locatePhpClass(project, testedClassname);
 
     }
