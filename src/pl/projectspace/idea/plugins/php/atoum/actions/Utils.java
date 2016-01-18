@@ -1,13 +1,16 @@
 package pl.projectspace.idea.plugins.php.atoum.actions;
 
+import com.google.common.collect.Lists;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.php.PhpIndex;
 import com.jetbrains.php.lang.psi.PhpFile;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.List;
 
 public class Utils {
 
@@ -18,8 +21,21 @@ public class Utils {
 
     @Nullable
     public static PhpClass locateTestClass(Project project, PhpClass testedClass) {
-        String testClassname = testedClass.getNamespaceName() + getTestsNamespaceSuffix() + testedClass.getName();
-        return locatePhpClass(project, testClassname);
+        String[] namespaceParts = testedClass.getNamespaceName().split("\\\\");
+
+        for(int i=namespaceParts.length; i>=1; i--){
+            List<String> foo = Lists.newArrayList(namespaceParts);
+            foo.add(i, getTestsNamespaceSuffix().substring(0, getTestsNamespaceSuffix().length() - 1));
+
+            String possibleClassname = StringUtils.join(foo, "\\") + "\\" + testedClass.getName();
+            System.out.println(possibleClassname);
+            PhpClass possibleClass = locatePhpClass(project, possibleClassname);
+            if (null != possibleClass) {
+                return possibleClass;
+            }
+        }
+
+        return null;
     }
 
     @Nullable
