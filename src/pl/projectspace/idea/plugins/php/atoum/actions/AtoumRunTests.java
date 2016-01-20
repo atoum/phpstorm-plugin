@@ -1,19 +1,13 @@
 package pl.projectspace.idea.plugins.php.atoum.actions;
 
-import com.intellij.execution.ExecutionException;
 import com.intellij.execution.filters.TextConsoleBuilder;
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
-import com.intellij.execution.process.OSProcessHandler;
-import com.intellij.execution.process.ProcessAdapter;
-import com.intellij.execution.process.ProcessEvent;
-import com.intellij.execution.process.ScriptRunnerUtil;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
@@ -27,8 +21,10 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -74,32 +70,39 @@ public class AtoumRunTests extends AnAction {
         String[] commandLineArgs = new String[1];
         commandLineArgs[0] = currentTestClass.getContainingFile().getVirtualFile().getPath();
 
+
+        VirtualFile testBaseDir = findTestBaseDir(currentTestClass, project);
+
+        ProcessBuilder ps = new ProcessBuilder(findAtoumBinPath(testBaseDir), "--use-tap-report", "-f ", currentTestClass.getContainingFile().getVirtualFile().getPath());
+        ps.directory(new File(testBaseDir.getPath()));
+
+        //From the DOC:  Initially, this property is false, meaning that the
+        //standard output and error output of a subprocess are sent to two
+        //separate streams
+        ps.redirectErrorStream(true);
+
+
         try {
-            VirtualFile testBaseDir = findTestBaseDir(currentTestClass, project);
-            OSProcessHandler processHandler = ScriptRunnerUtil.execute(
-                findAtoumBinPath(testBaseDir),
-                testBaseDir.getPath(),
-                null,
-                commandLineArgs
-            );
-
-            processHandler.addProcessListener(new ProcessAdapter() {
-                public void onTextAvailable(ProcessEvent event, Key outputType) {
-                    outputBuilder.append(event.getText());
-                }
-            });
-
-            processHandler.startNotify();
-            while (true) {
-                boolean finished = processHandler.waitFor(1000L);
-                if (finished) {
-                    break;
-                }
+            Process pr = ps.start();
+            BufferedReader in = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+            String content = "";
+            String line;
+            while ((line = in.readLine()) != null) {
+                content += line + "\n";
             }
-            return outputBuilder.toString();
-        } catch (ExecutionException e1) {
-            e1.printStackTrace();
-            return "ERROR launching tests" + e1.getMessage();
+            pr.waitFor();
+
+            in.close();
+            if (0 == pr.exitValue()) {
+                return content;
+            }
+            return "ERROR " + content;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "ERROR launching tests : " + e.getMessage();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return "ERROR launching tests : " + e.getMessage();
         }
     }
 
