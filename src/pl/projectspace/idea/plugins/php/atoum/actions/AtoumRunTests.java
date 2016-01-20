@@ -14,9 +14,11 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.psi.PsiDirectory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentManager;
 import com.jetbrains.php.lang.psi.PhpFile;
@@ -25,10 +27,8 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -75,9 +75,10 @@ public class AtoumRunTests extends AnAction {
         commandLineArgs[0] = currentTestClass.getContainingFile().getVirtualFile().getPath();
 
         try {
+            VirtualFile testBaseDir = findTestBaseDir(currentTestClass, project);
             OSProcessHandler processHandler = ScriptRunnerUtil.execute(
-                findAtoumBinPath(project),
-                project.getBasePath(),
+                findAtoumBinPath(testBaseDir),
+                testBaseDir.getPath(),
                 null,
                 commandLineArgs
             );
@@ -102,12 +103,38 @@ public class AtoumRunTests extends AnAction {
         }
     }
 
-    protected String findAtoumBinPath(Project project)
+    protected VirtualFile findTestBaseDir(PhpClass currentTestClass, Project project)
     {
-        String defaultBinPath = project.getBasePath() + "/vendor/bin/atoum";
+        Boolean continueSearch = true;
+        Integer maxDirs = 35;
+        Integer dirCount = 0;
+        PsiDirectory currentDir = currentTestClass.getContainingFile().getContainingDirectory();
+        while (continueSearch) {
+            dirCount++;
+            if (currentDir.getVirtualFile().equals(project.getBaseDir())) {
+                continueSearch = false;
+            } else if (dirCount >= maxDirs) {
+                continueSearch = false;
+            } else {
+                if (new File(currentDir.getVirtualFile().getPath() + "/composer.json").exists()) {
+                    return currentDir.getVirtualFile();
+                }
+            }
+            currentDir = currentDir.getParentDirectory();
+            if (null == currentDir) {
+                return project.getBaseDir();
+            }
+        }
 
-        String binDir = getComposerBinDir(project.getBasePath() + "/composer.json");
-        String binPath = project.getBasePath() + "/" + binDir + "/atoum";
+        return project.getBaseDir();
+    }
+
+    protected String findAtoumBinPath(VirtualFile dir)
+    {
+        String defaultBinPath = dir.getPath() + "/vendor/bin/atoum";
+
+        String binDir = getComposerBinDir(dir.getPath() + "/composer.json");
+        String binPath = dir.getPath() + "/" + binDir + "/atoum";
         if (null != binDir && new File(binPath).exists()) {
             return binPath;
         }
