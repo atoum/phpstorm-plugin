@@ -1,7 +1,13 @@
 # `dev-master`
 
+
+# 0.4.2 - 2016-01-20
+
+## Bugfix
+
 * [#24](https://github.com/agallou/phpstorm-plugin/pull/24) Fix test/tested class navigation when NS suffix is not all lowercase ([@agallou])
-* [#25](https://github.com/agallou/phpstorm-plugin/pull/25) Fix the run of the test when a bin-dir has ben defined in the composer.json ([@agallou])
+* [#25](https://github.com/agallou/phpstorm-plugin/pull/25) Fix the run of the test when a bin-dir has been defined in the composer.json ([@agallou])
+* [#27](https://github.com/agallou/phpstorm-plugin/pull/27) Fix the run of the test when the composer.json is on a project subdirectory ([@agallou])
 
 
 # 0.4.1 - 2016-01-18
