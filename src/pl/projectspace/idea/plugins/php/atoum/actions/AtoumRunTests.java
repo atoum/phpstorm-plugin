@@ -13,7 +13,6 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
@@ -22,8 +21,16 @@ import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentManager;
 import com.jetbrains.php.lang.psi.PhpFile;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 
 public class AtoumRunTests extends AnAction {
@@ -69,32 +76,55 @@ public class AtoumRunTests extends AnAction {
 
         try {
             OSProcessHandler processHandler = ScriptRunnerUtil.execute(
-                "./vendor/bin/atoum",
-                    project.getBasePath(),
+                findAtoumBinPath(project),
+                project.getBasePath(),
                 null,
                 commandLineArgs
             );
 
-            processHandler.addProcessListener(new ProcessAdapter()
-            {
+            processHandler.addProcessListener(new ProcessAdapter() {
                 public void onTextAvailable(ProcessEvent event, Key outputType) {
-                outputBuilder.append(event.getText());
+                    outputBuilder.append(event.getText());
                 }
             });
 
             processHandler.startNotify();
-            while (true)
-            {
+            while (true) {
                 boolean finished = processHandler.waitFor(1000L);
                 if (finished) {
                     break;
                 }
             }
-
             return outputBuilder.toString();
         } catch (ExecutionException e1) {
             e1.printStackTrace();
             return "ERROR launching tests" + e1.getMessage();
+        }
+    }
+
+    protected String findAtoumBinPath(Project project)
+    {
+        String defaultBinPath = project.getBasePath() + "/vendor/bin/atoum";
+
+        String binDir = getComposerBinDir(project.getBasePath() + "/composer.json");
+        String binPath = project.getBasePath() + "/" + binDir + "/atoum";
+        if (null != binDir && new File(binPath).exists()) {
+            return binPath;
+        }
+
+        return defaultBinPath;
+    }
+
+    @Nullable
+    protected String getComposerBinDir(String composerPath) {
+        try {
+            String composerJsonContent = new String(Files.readAllBytes(Paths.get(composerPath)));
+            JSONObject obj = new JSONObject(composerJsonContent);
+            return obj.getJSONObject("config").get("bin-dir").toString();
+        } catch (JSONException e) {
+            return null;
+        } catch (IOException e) {
+            return null;
         }
     }
 
