@@ -44,6 +44,15 @@ Integrates atoum into PhpStorm
 
 ![Demo](doc/run_from_tested_class.png)
 
+### Easily identify test file by a custom icon
+
+Atoum's test files are displayed with a different icon, like that you will easily differentiate them from other PHP files.
+
+![Demo](doc/custom_icon-tabs.png)
+
+![Demo](doc/custom_icon-tree.png)
+
+
 ## Installation
 
 * Download the lasted version of the `.jar` on the [releases pages](https://github.com/agallou/phpstorm-plugin/releases)
