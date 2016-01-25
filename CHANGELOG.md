@@ -1,5 +1,9 @@
 # `dev-master`
 
+## Features
+
+* [#30](https://github.com/agallou/phpstorm-plugin/pull/30) Easily identify test files via a custom icon ([@agallou])
+
 
 # 0.4.2 - 2016-01-20
 
