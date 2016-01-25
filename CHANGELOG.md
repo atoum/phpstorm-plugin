@@ -4,6 +4,10 @@
 
 * [#30](https://github.com/agallou/phpstorm-plugin/pull/30) Easily identify test files via a custom icon ([@agallou])
 
+## Documentation
+
+* [#32](https://github.com/agallou/phpstorm-plugin/pull/32) Improve documentation ([@agallou])
+
 
 # 0.4.2 - 2016-01-20
 
