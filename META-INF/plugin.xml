@@ -24,6 +24,7 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <codeInsight.lineMarkerProvider language="PHP" implementationClass="pl.projectspace.idea.plugins.php.atoum.actions.ClassLineMarkerProvider" />
+    <iconProvider implementation="org.atoum.intellij.plugin.atoum.AtoumIconProvider" />
     <!-- Add your extensions here -->
   </extensions>
 
@@ -42,6 +43,7 @@
             text="Swicth to test class / tested class">
       <add-to-group group-id="GoToCodeGroup" anchor="last"/>
       <add-to-group group-id="EditorPopupMenu.GoTo" anchor="last"/>
+      <keyboard-shortcut first-keystroke="alt shift K" keymap="$default"/>
     </action>
 
     <action id="AtoumRunTests" class="pl.projectspace.idea.plugins.php.atoum.actions.AtoumRunTests"
@@ -49,6 +51,7 @@
             text="run tests">
       <add-to-group group-id="RunMenu" anchor="last"/>
       <add-to-group group-id="EditorPopupMenu.Run" anchor="last"/>
+      <keyboard-shortcut first-keystroke="alt shift M" keymap="$default"/>
     </action>
   </actions>
 
