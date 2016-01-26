@@ -4,9 +4,9 @@ Integrates atoum into PhpStorm.
 
 Features :
 
-* Go to the test class from the tested class
-* Go to the tested class from the test class
-* Execute tests inside PhpStorm
+* Go to the test class from the tested class (shortcut : alt+shift+K)
+* Go to the tested class from the test class (shortcut : alt+shift+K)
+* Execute tests inside PhpStorm (shortcut : alt+shift+M)
 * Easily identify test files by a custom icon
 
 
@@ -27,6 +27,8 @@ or by an entry bin the right click menu.
 
 ![Demo](doc/switch-right_click.png)
 
+The default keyboard shortcut to switch file is alt+shift+K.
+
 
 ### Go to the tested class from the test class
 
@@ -42,6 +44,8 @@ or by an entry bin the right click menu.
 
 ![Demo](doc/switch_back-right_click.png)
 
+The default keyboard shortcut to switch file is alt+shift+K.
+
 
 ### Execute tests inside PhpStorm
 
@@ -54,6 +58,9 @@ You can run the tests from both the test file or the tested classe's file :
 ![Demo](doc/run_from_tested_class.png)
 
 Your test file and tested file will automatically be save before running the test.
+
+The default keyboard shortcut to execute the test is alt+shift+M.
+
 
 ### Easily identify test files by a custom icon
 
