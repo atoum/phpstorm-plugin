@@ -3,6 +3,7 @@
 ## Features
 
 * [#30](https://github.com/agallou/phpstorm-plugin/pull/30) Easily identify test files via a custom icon ([@agallou])
+* [#37](https://github.com/agallou/phpstorm-plugin/pull/37) Save test and tested file before run ([@agallou])
 
 ## Documentation
 
