@@ -7,6 +7,8 @@ import com.intellij.execution.ui.ConsoleViewContentType;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
@@ -46,6 +48,14 @@ public class AtoumRunTests extends AnAction {
         event.getPresentation().setEnabled(true);
     }
 
+    protected void saveFiles(PhpClass currentTestClass, Project project) {
+        Document documentTestClass = FileDocumentManager.getInstance().getDocument(currentTestClass.getContainingFile().getVirtualFile());
+        Document documentTestedClass = FileDocumentManager.getInstance().getDocument(Utils.locateTestedClass(project, currentTestClass).getContainingFile().getVirtualFile());
+        FileDocumentManager.getInstance().saveDocument(documentTestClass);
+        FileDocumentManager.getInstance().saveDocument(documentTestedClass);
+
+    }
+
     public void actionPerformed(final AnActionEvent e) {
         PhpClass currentTestClass = getCurrentTestClass(e);
         if (currentTestClass == null) {
@@ -56,6 +66,8 @@ public class AtoumRunTests extends AnAction {
 
         ToolWindow toolWindow = getToolWindow(project);
         ConsoleView console = getConsole(toolWindow, project);
+
+        saveFiles(currentTestClass, project);
 
         String output = runTest(currentTestClass, project);
 

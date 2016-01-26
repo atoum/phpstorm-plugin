@@ -53,6 +53,7 @@ You can run the tests from both the test file or the tested classe's file :
 
 ![Demo](doc/run_from_tested_class.png)
 
+Your test file and tested file will automatically be save before running the test.
 
 ### Easily identify test files by a custom icon
 
