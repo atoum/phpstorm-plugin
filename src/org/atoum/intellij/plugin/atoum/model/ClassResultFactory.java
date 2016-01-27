@@ -27,11 +27,17 @@ public class ClassResultFactory {
                     classResult.addMethodResult(methodResult);
                 }
 
+                Integer lineWithMethod = i;
+
                 if (tapOutputLines[i].startsWith("ok") && i +1 < tapOutputLines.length ) {
-                    testName = tapOutputLines[i + 1].substring(tapOutputLines[i + 1].indexOf("::") + 2);
-                } else {
-                    testName = tapOutputLines[i].substring(tapOutputLines[i].indexOf("::") + 2);
+                    lineWithMethod = i + 1;
+
                 }
+
+                testName = tapOutputLines[lineWithMethod].substring(tapOutputLines[lineWithMethod].indexOf("::") + 2);
+                //only works with one classe per file
+                classResult.setName(tapOutputLines[lineWithMethod].substring(1, tapOutputLines[lineWithMethod].indexOf("::")));
+
                 testContent = "";
                 firstTestFound = true;
                 currentTestIsOk = tapOutputLines[i].startsWith("ok");
@@ -41,6 +47,11 @@ public class ClassResultFactory {
 
         if (firstTestFound) {
             MethodResult methodResult = new MethodResult(testName, testContent);
+            if (currentTestIsOk) {
+                methodResult.definedStatePassed();
+            } else {
+                methodResult.definedStateFailed();
+            }
             classResult.addMethodResult(methodResult);
         }
 

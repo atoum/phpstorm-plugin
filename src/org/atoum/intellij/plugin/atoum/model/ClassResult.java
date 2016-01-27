@@ -11,7 +11,7 @@ public class ClassResult
 
     protected ArrayList<MethodResult> methodsResults;
 
-    protected String fqn;
+    protected String name;
 
     public ClassResult() {
         this.methodsResults = new ArrayList<MethodResult>();
@@ -52,11 +52,11 @@ public class ClassResult
         return this.methodsResults;
     }
 
-    public String getFqn() {
-        return fqn;
+    public String getName() {
+        return name;
     }
 
-    public void setFqn(String fqn) {
-        this.fqn = fqn;
+    public void setName(String name) {
+        this.name = name;
     }
 }

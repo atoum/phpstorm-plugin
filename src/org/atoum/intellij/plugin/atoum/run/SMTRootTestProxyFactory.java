@@ -9,7 +9,7 @@ public class SMTRootTestProxyFactory {
     public static SMTestProxy.SMRootTestProxy createFromClassResult(ClassResult classResult)
     {
         SMTestProxy.SMRootTestProxy classNode = new SMTestProxy.SMRootTestProxy();
-        classNode.setPresentation(classResult.getFqn());
+        classNode.setPresentation(classResult.getName());
         classNode.setFinished();
 
         if (classResult.getState().equals(ClassResult.STATE_FAILED)) {
