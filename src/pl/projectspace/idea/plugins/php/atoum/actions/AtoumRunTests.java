@@ -33,8 +33,11 @@ import com.jetbrains.php.lang.psi.PhpFile;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
 import com.jetbrains.php.run.PhpRunConfiguration;
 import com.jetbrains.php.run.PhpRunConfigurationFactoryBase;
+import org.atoum.intellij.plugin.atoum.model.ClassResult;
+import org.atoum.intellij.plugin.atoum.model.ClassResultFactory;
 import org.atoum.intellij.plugin.atoum.run.AtoumLocalRunConfiguration;
 import org.atoum.intellij.plugin.atoum.run.AtoumLocalRunConfigurationType;
+import org.atoum.intellij.plugin.atoum.run.SMTRootTestProxyFactory;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.jetbrains.annotations.NotNull;
@@ -218,57 +221,10 @@ public class AtoumRunTests extends AnAction {
 
                 @Override
                 public void onTestingFinished(TestResultsViewer testResultsViewer) {
-                    String tapOutput = outputBuilder.toString();
+                    ClassResult classResult = ClassResultFactory.createFromTapOutput(outputBuilder.toString());
+                    classResult.setFqn(currentTestClass.getFQN());
 
-                    SMTestProxy.SMRootTestProxy class1TestProxy = new SMTestProxy.SMRootTestProxy();
-                    class1TestProxy.setRootLocationUrl(currentTestClass.getContainingFile().getVirtualFile().getPath());
-                    class1TestProxy.setPresentation(currentTestClass.getFQN());
-                    class1TestProxy.setFinished();
-
-                    Boolean firstTestFound = false;
-                    Boolean currentTestIsOk = false;
-                    String testContent = "";
-                    String testName = "";
-                    String[] tapOutputLines = tapOutput.split("\n");
-                    for (Integer i = 0; i < tapOutputLines.length; i++) {
-                        testContent += tapOutputLines[i] + "\n";
-
-                        if (tapOutputLines[i].startsWith("not ok") || tapOutputLines[i].startsWith("ok")) {
-                            if (firstTestFound) {
-                                SMTestProxy method1TestProxy = new SMTestProxy(testName, true, "");
-                                if (currentTestIsOk) {
-                                    method1TestProxy.addSystemOutput(testContent);
-                                } else {
-                                    method1TestProxy.setTestFailed(testName + " Failed", testContent, true);
-                                }
-                                method1TestProxy.setFinished();
-                                class1TestProxy.addChild(method1TestProxy);
-                                if (method1TestProxy.isDefect()) {
-                                    class1TestProxy.setTestFailed("", "", true);
-                                }
-                            }
-
-                            if (tapOutputLines[i].startsWith("ok") && i +1 < tapOutputLines.length ) {
-                                testName = tapOutputLines[i + 1].substring(tapOutputLines[i + 1].indexOf("::") + 2);
-                            } else {
-                                testName = tapOutputLines[i].substring(tapOutputLines[i].indexOf("::") + 2);
-                            }
-                            testContent = "";
-                            firstTestFound = true;
-                            currentTestIsOk = tapOutputLines[i].startsWith("ok");
-
-                        }
-
-                    }
-
-                    if (firstTestFound) {
-                        SMTestProxy method1TestProxy = new SMTestProxy(testName, true, "");
-                        method1TestProxy.setTestFailed(testName + " Failed", testContent, true);
-                        method1TestProxy.setFinished();
-                        class1TestProxy.addChild(method1TestProxy);
-                    }
-
-                    console.getResultsViewer().getTestsRootNode().addChild(class1TestProxy);
+                    console.getResultsViewer().getTestsRootNode().addChild(SMTRootTestProxyFactory.createFromClassResult(classResult));
                 }
 
                 @Override
