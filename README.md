@@ -13,6 +13,19 @@ Features :
 ## Detailed Features
 
 
+### Execute tests inside PhpStorm
+
+By an entry on the run menu and on the right click menu.
+
+![Demo](doc/run.png)
+
+You can run the tests from both the test file or the tested classe's file.
+
+Your test file and tested file will automatically be save before running the test.
+
+The default keyboard shortcut to execute the test is alt+shift+M.
+
+
 ### Go to the test class from the tested class
 
 From the tested class you can go to the test class by clicking on the icon on the left of the class,
@@ -45,21 +58,6 @@ or by an entry bin the right click menu.
 ![Demo](doc/switch_back-right_click.png)
 
 The default keyboard shortcut to switch file is alt+shift+K.
-
-
-### Execute tests inside PhpStorm
-
-By an entry on the run menu and on the right click menu.
-
-![Demo](doc/run.png)
-
-You can run the tests from both the test file or the tested classe's file :
-
-![Demo](doc/run_from_tested_class.png)
-
-Your test file and tested file will automatically be save before running the test.
-
-The default keyboard shortcut to execute the test is alt+shift+M.
 
 
 ### Easily identify test files by a custom icon
