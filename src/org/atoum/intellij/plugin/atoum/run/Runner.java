@@ -137,6 +137,19 @@ public class Runner {
                     for (ClassResult classResult: testsResult.getClassResults()) {
                         console.getResultsViewer().getTestsRootNode().addChild(SMTRootTestProxyFactory.createFromClassResult(classResult));
                     }
+                    selectFirstFailedMethod();
+                }
+
+                protected void selectFirstFailedMethod()
+                {
+                    for (SMTestProxy testProxy: console.getResultsViewer().getTestsRootNode().getAllTests()) {
+                        for (SMTestProxy methodProxy: testProxy.getAllTests()) {
+                            if (methodProxy.isDefect()) {
+                                console.getResultsViewer().selectAndNotify(methodProxy);
+                            }
+                        }
+
+                    }
                 }
 
                 @Override
