@@ -1,65 +1,75 @@
 package org.atoum.intellij.plugin.atoum.model;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class TestsResultFactory {
+
 
     public static TestsResult createFromTapOutput(String tapOutput)
     {
         TestsResult testsResult = new TestsResult();
 
-        ClassResult classResult = new ClassResult();
+        Pattern statusLinePattern = Pattern.compile("((?:not )?ok) (\\d+)(?: (?:# SKIP|# TODO|-) (.+)::(.+)\\(\\))?$");
+        Pattern nameLinePattern = Pattern.compile("^# (.+)::(.+)\\(\\)$");
 
-        Boolean firstTestFound = false;
-        Boolean currentTestIsOk = false;
-        String testContent = "";
-        String testName = "";
         String[] tapOutputLines = tapOutput.split("\n");
-        for (Integer i = 0; i < tapOutputLines.length; i++) {
-            testContent += tapOutputLines[i] + "\n";
 
-            if (tapOutputLines[i].startsWith("not ok") || tapOutputLines[i].startsWith("ok")) {
-                if (firstTestFound) {
+        Boolean infosFound = false;
+        String currentMethodName = "";
+        String currentContent = "";
+        String currentClassname = "";
+        String currentStatus = "";
 
-                    MethodResult methodResult = new MethodResult(testName, testContent);
+        //The first line contains the number of tests
+        for (Integer i = 1; i < tapOutputLines.length; i++) {
+            String currentLine = tapOutputLines[i];
 
-                    if (currentTestIsOk) {
-                        methodResult.definedStatePassed();
-                    } else {
-                        methodResult.definedStateFailed();
-                    }
+            Matcher statusLineMatcher = statusLinePattern.matcher(currentLine);
 
-                    classResult.addMethodResult(methodResult);
+            if (statusLineMatcher.matches()) {
+                if (infosFound) {
+                    flushLine(testsResult, currentClassname, currentMethodName, currentContent, currentStatus);
                 }
 
-                Integer lineWithMethod = i;
+                currentMethodName = statusLineMatcher.group(4);
+                currentContent = "";
+                currentClassname = statusLineMatcher.group(3);
+                currentStatus = statusLineMatcher.group(1);
+                infosFound = true;
 
-                if (tapOutputLines[i].startsWith("ok") && i +1 < tapOutputLines.length ) {
-                    lineWithMethod = i + 1;
-
-                }
-
-                testName = tapOutputLines[lineWithMethod].substring(tapOutputLines[lineWithMethod].indexOf("::") + 2);
-                //only works with one classe per file
-                classResult.setName(tapOutputLines[lineWithMethod].substring(1, tapOutputLines[lineWithMethod].indexOf("::")));
-
-                testContent = "";
-                firstTestFound = true;
-                currentTestIsOk = tapOutputLines[i].startsWith("ok");
-            }
-
-        }
-
-        if (firstTestFound) {
-            MethodResult methodResult = new MethodResult(testName, testContent);
-            if (currentTestIsOk) {
-                methodResult.definedStatePassed();
             } else {
-                methodResult.definedStateFailed();
+                Matcher nameLineMatcher = nameLinePattern.matcher(currentLine);
+                if (nameLineMatcher.matches()) {
+                    currentClassname = nameLineMatcher.group(1);
+                    currentMethodName = nameLineMatcher.group(2);
+                } else {
+                    currentContent += currentLine.substring(1);
+                }
             }
-            classResult.addMethodResult(methodResult);
         }
 
-        testsResult.addClassResult(classResult.getName(), classResult);
+        if (infosFound) {
+            flushLine(testsResult, currentClassname, currentMethodName, currentContent, currentStatus);
+        }
 
         return testsResult;
+    }
+
+    protected static void flushLine(TestsResult testsResult, String currentClassname, String currentMethodName, String currentContent, String currentStatus) {
+        MethodResult methodResult = new MethodResult(currentMethodName, currentContent);
+        if (!testsResult.hasClassResult(currentClassname)) {
+            ClassResult classResult = new ClassResult();
+            classResult.setName(currentClassname);
+            testsResult.addClassResult(currentClassname, classResult);
+        }
+
+        if (currentStatus.equals("not ok")) {
+            methodResult.definedStateFailed();
+        } else if (currentStatus.equals("ok")) {
+            methodResult.definedStatePassed();
+        }
+
+        testsResult.getClassResult(currentClassname).addMethodResult(methodResult);
     }
 }
