@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>com.atoum.phpstormplugin</id>
   <name>atoum plugin</name>
-  <version>0.4.2</version>
+  <version>0.5.0</version>
   <vendor email="adriengallou@gmail.com">Adrien Gallou</vendor>
 
   <description><![CDATA[
