@@ -1,5 +1,8 @@
 # `dev-master`
 
+
+# 0.5.1 - 2016-01-29
+
 ## Bugfix
 
 * [#42](https://github.com/agallou/phpstorm-plugin/pull/42) Fix display of multiline failed outputs ([@agallou])
