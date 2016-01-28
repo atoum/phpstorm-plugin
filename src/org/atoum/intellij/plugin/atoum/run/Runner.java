@@ -29,9 +29,7 @@ import com.intellij.ui.content.ContentManager;
 import com.jetbrains.php.run.PhpRunConfiguration;
 import com.jetbrains.php.run.PhpRunConfigurationFactoryBase;
 import org.atoum.intellij.plugin.atoum.AtoumUtils;
-import org.atoum.intellij.plugin.atoum.model.ClassResult;
-import org.atoum.intellij.plugin.atoum.model.ClassResultFactory;
-import org.atoum.intellij.plugin.atoum.model.RunnerConfiguration;
+import org.atoum.intellij.plugin.atoum.model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pl.projectspace.idea.plugins.php.atoum.actions.Icons;
@@ -134,8 +132,11 @@ public class Runner {
 
                 @Override
                 public void onTestingFinished(TestResultsViewer testResultsViewer) {
-                    ClassResult classResult = ClassResultFactory.createFromTapOutput(outputBuilder.toString());
-                    console.getResultsViewer().getTestsRootNode().addChild(SMTRootTestProxyFactory.createFromClassResult(classResult));
+                    TestsResult testsResult = TestsResultFactory.createFromTapOutput(outputBuilder.toString());
+
+                    for (ClassResult classResult: testsResult.getClassResults()) {
+                        console.getResultsViewer().getTestsRootNode().addChild(SMTRootTestProxyFactory.createFromClassResult(classResult));
+                    }
                 }
 
                 @Override

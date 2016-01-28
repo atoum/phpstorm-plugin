@@ -1,9 +1,11 @@
 package org.atoum.intellij.plugin.atoum.model;
 
-public class ClassResultFactory {
+public class TestsResultFactory {
 
-    public static ClassResult createFromTapOutput(String tapOutput)
+    public static TestsResult createFromTapOutput(String tapOutput)
     {
+        TestsResult testsResult = new TestsResult();
+
         ClassResult classResult = new ClassResult();
 
         Boolean firstTestFound = false;
@@ -24,6 +26,7 @@ public class ClassResultFactory {
                     } else {
                         methodResult.definedStateFailed();
                     }
+
                     classResult.addMethodResult(methodResult);
                 }
 
@@ -55,6 +58,8 @@ public class ClassResultFactory {
             classResult.addMethodResult(methodResult);
         }
 
-        return classResult;
+        testsResult.addClassResult(classResult.getName(), classResult);
+
+        return testsResult;
     }
 }
