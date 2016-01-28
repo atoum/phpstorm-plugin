@@ -1,4 +1,4 @@
-package pl.projectspace.idea.plugins.php.atoum.actions;
+package org.atoum.intellij.plugin.atoum.actions;
 
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.project.Project;
@@ -6,8 +6,9 @@ import com.jetbrains.php.lang.psi.PhpFile;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.ide.actions.OpenFileAction;
+import org.atoum.intellij.plugin.atoum.Utils;
 
-public class AtoumSwitchContext extends AnAction {
+public class SwitchContext extends AnAction {
 
     @Override
     public void update(AnActionEvent e) {

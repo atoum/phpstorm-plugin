@@ -1,7 +1,6 @@
-package pl.projectspace.idea.plugins.php.atoum.actions;
+package org.atoum.intellij.plugin.atoum.linemarker;
 
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
-import com.intellij.codeInsight.daemon.LineMarkerProvider;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
 import com.intellij.openapi.project.Project;
@@ -9,6 +8,8 @@ import com.intellij.psi.PsiElement;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.atoum.intellij.plugin.atoum.Icons;
+import org.atoum.intellij.plugin.atoum.Utils;
 
 import java.util.Collection;
 import java.util.List;

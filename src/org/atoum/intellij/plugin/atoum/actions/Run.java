@@ -11,7 +11,7 @@ import com.jetbrains.php.lang.psi.elements.PhpClass;
 import org.atoum.intellij.plugin.atoum.model.RunnerConfiguration;
 import org.atoum.intellij.plugin.atoum.run.Runner;
 import org.jetbrains.annotations.Nullable;
-import pl.projectspace.idea.plugins.php.atoum.actions.Utils;
+import org.atoum.intellij.plugin.atoum.Utils;
 
 public class Run extends AnAction {
 

@@ -1,4 +1,4 @@
-package pl.projectspace.idea.plugins.php.atoum.actions;
+package org.atoum.intellij.plugin.atoum;
 
 import com.google.common.collect.Lists;
 import com.intellij.openapi.project.Project;

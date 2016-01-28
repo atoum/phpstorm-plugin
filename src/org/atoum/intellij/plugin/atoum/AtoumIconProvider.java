@@ -7,8 +7,6 @@ import com.intellij.psi.PsiElement;
 import com.jetbrains.php.lang.psi.PhpFile;
 import javax.swing.Icon;
 import org.jetbrains.annotations.NotNull;
-import pl.projectspace.idea.plugins.php.atoum.actions.Icons;
-import pl.projectspace.idea.plugins.php.atoum.actions.Utils;
 
 public class AtoumIconProvider extends IconProvider {
 
