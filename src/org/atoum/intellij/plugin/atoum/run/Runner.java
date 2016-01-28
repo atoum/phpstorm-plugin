@@ -108,7 +108,7 @@ public class Runner {
 
             testsOutputConsoleView.attachToProcess(processHandler);
             console.getResultsViewer().setAutoscrolls(true);
-            TestConsoleProperties.HIDE_PASSED_TESTS.set(testsOutputConsoleView.getProperties(), false);
+            TestConsoleProperties.HIDE_PASSED_TESTS.set(testsOutputConsoleView.getProperties(), true);
             TestConsoleProperties.SELECT_FIRST_DEFECT.set(testsOutputConsoleView.getProperties(), true);
 
             final OSProcessHandler finalProcessHandler = processHandler;
