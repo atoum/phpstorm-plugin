@@ -3,11 +3,11 @@ package org.atoum.intellij.plugin.atoum.run;
 import com.intellij.execution.testframework.sm.runner.SMTestProxy;
 import org.atoum.intellij.plugin.atoum.model.ClassResult;
 import org.atoum.intellij.plugin.atoum.model.MethodResult;
+import org.atoum.intellij.plugin.atoum.model.TestsResult;
 
 public class SMTRootTestProxyFactory {
 
-    public static SMTestProxy.SMRootTestProxy createFromClassResult(ClassResult classResult)
-    {
+    public static SMTestProxy.SMRootTestProxy createFromClassResult(ClassResult classResult) {
         SMTestProxy.SMRootTestProxy classNode = new SMTestProxy.SMRootTestProxy();
         classNode.setPresentation(classResult.getName());
         classNode.setFinished();
@@ -30,6 +30,16 @@ public class SMTRootTestProxyFactory {
         }
 
         return classNode;
+    }
+
+    public static void updateFromTestResult(TestsResult testsResult, SMTestProxy testsRootNode) {
+        for (ClassResult classResult: testsResult.getClassResults()) {
+            testsRootNode.addChild(SMTRootTestProxyFactory.createFromClassResult(classResult));
+        }
+
+        if (testsResult.getState().equals(TestsResult.STATE_FAILED)) {
+            testsRootNode.setTestFailed("", "", true);
+        }
     }
 
 }

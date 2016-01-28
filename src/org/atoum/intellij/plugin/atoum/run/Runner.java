@@ -133,10 +133,10 @@ public class Runner {
                 @Override
                 public void onTestingFinished(TestResultsViewer testResultsViewer) {
                     TestsResult testsResult = TestsResultFactory.createFromTapOutput(outputBuilder.toString());
+                    SMTestProxy testsRootNode = console.getResultsViewer().getTestsRootNode();
 
-                    for (ClassResult classResult: testsResult.getClassResults()) {
-                        console.getResultsViewer().getTestsRootNode().addChild(SMTRootTestProxyFactory.createFromClassResult(classResult));
-                    }
+                    SMTRootTestProxyFactory.updateFromTestResult(testsResult, testsRootNode);
+
                     selectFirstFailedMethod();
                 }
 
