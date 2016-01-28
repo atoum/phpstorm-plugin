@@ -7,7 +7,7 @@ import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.openapi.project.Project;
 import com.jetbrains.php.run.PhpRunConfigurationFactoryBase;
 import org.jetbrains.annotations.NotNull;
-import pl.projectspace.idea.plugins.php.atoum.actions.Icons;
+import org.atoum.intellij.plugin.atoum.Icons;
 
 import javax.swing.*;
 

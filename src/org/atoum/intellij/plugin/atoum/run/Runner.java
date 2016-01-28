@@ -32,7 +32,7 @@ import org.atoum.intellij.plugin.atoum.AtoumUtils;
 import org.atoum.intellij.plugin.atoum.model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pl.projectspace.idea.plugins.php.atoum.actions.Icons;
+import org.atoum.intellij.plugin.atoum.Icons;
 
 import java.util.Arrays;
 

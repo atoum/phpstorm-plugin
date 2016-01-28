@@ -23,7 +23,7 @@
   -->
 
   <extensions defaultExtensionNs="com.intellij">
-    <codeInsight.lineMarkerProvider language="PHP" implementationClass="pl.projectspace.idea.plugins.php.atoum.actions.ClassLineMarkerProvider" />
+    <codeInsight.lineMarkerProvider language="PHP" implementationClass="org.atoum.intellij.plugin.atoum.linemarker.ClassLineMarkerProvider" />
     <iconProvider implementation="org.atoum.intellij.plugin.atoum.AtoumIconProvider" />
     <!-- Add your extensions here -->
   </extensions>
@@ -38,8 +38,8 @@
 
   <actions>
     <!-- Add your actions here -->
-    <action id="AtoumSwitchContext" class="pl.projectspace.idea.plugins.php.atoum.actions.AtoumSwitchContext"
-            icon="/pl/projectspace/idea/plugins/php/atoum/icons/atoum_16_16.png"
+    <action id="AtoumSwitchContext" class="org.atoum.intellij.plugin.atoum.actions.SwitchContext"
+            icon="/org/atoum/intellij/plugin/atoum/icons/atoum_16_16.png"
             text="Swicth to test class / tested class">
       <add-to-group group-id="GoToCodeGroup" anchor="last"/>
       <add-to-group group-id="EditorPopupMenu.GoTo" anchor="last"/>
@@ -47,7 +47,7 @@
     </action>
 
     <action id="AtoumRunTests" class="org.atoum.intellij.plugin.atoum.actions.Run"
-            icon="/pl/projectspace/idea/plugins/php/atoum/icons/atoum_16_16.png"
+            icon="/org/atoum/intellij/plugin/atoum/icons/atoum_16_16.png"
             text="run tests">
       <add-to-group group-id="RunMenu" anchor="last"/>
       <add-to-group group-id="EditorPopupMenu.Run" anchor="last"/>
