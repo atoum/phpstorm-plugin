@@ -71,6 +71,16 @@ Atoum's test files are displayed with a different icon, like that you will easil
 
 ## Installation
 
+### Inside PhpStorm (recommended)
+
+* Open PhpStorm
+* Go to `File -> Settings`, then click on `Plugins`
+* Click on `Browse repositories`
+* Search for atoum in the list, then click on the install button
+* Restart PhpStorm
+
+### Via the jar
+
 * Download the lasted version of the `.jar` on the [releases pages](https://github.com/atoum/phpstorm-plugin/releases)
 * Open PhpStorm
 * Go to `File -> Settings`, then click on `Plugins`
