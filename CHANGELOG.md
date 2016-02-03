@@ -1,5 +1,9 @@
 # `dev-master`
 
+## Bugfix
+
+* [#47](https://github.com/atoum/phpstorm-plugin/pull/47) Avoid NullPointerException when a file does not contain a class ([@agallou])
+
 
 # 0.5.1 - 2016-01-29
 
