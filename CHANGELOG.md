@@ -1,5 +1,9 @@
 # `dev-master`
 
+## Features
+
+* [#45](https://github.com/atoum/phpstorm-plugin/pull/45) Tests could now be runned on windows ([@agallou])
+
 ## Bugfix
 
 * [#53](https://github.com/atoum/phpstorm-plugin/pull/53) Remove "empty test suite" message in console when test passes ([@agallou])
