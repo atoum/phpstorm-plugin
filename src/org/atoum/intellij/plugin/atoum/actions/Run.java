@@ -29,7 +29,7 @@ public class Run extends AnAction {
         } else {
             VirtualFile selectedDir = getCurrentTestDirectory(event);
             if (selectedDir != null) {
-                event.getPresentation().setText("atoum - run dir");
+                event.getPresentation().setText("atoum - run dir : " + selectedDir.getName());
                 event.getPresentation().setEnabled(true);
             }
         }
