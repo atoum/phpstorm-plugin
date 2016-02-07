@@ -59,6 +59,10 @@ or by an entry bin the right click menu.
 
 The default keyboard shortcut to switch file is alt+shift+K.
 
+You can also run the test on the project view. From here you can launch tests on an entire directory:
+
+![Demo](doc/run_dir.png)
+
 
 ### Easily identify test files by a custom icon
 

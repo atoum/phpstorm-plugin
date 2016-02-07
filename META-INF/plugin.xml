@@ -49,6 +49,7 @@
     <action id="AtoumRunTests" class="org.atoum.intellij.plugin.atoum.actions.Run"
             icon="/org/atoum/intellij/plugin/atoum/icons/atoum_16_16.png"
             text="run tests">
+      <add-to-group group-id="ProjectViewPopupMenu"/>
       <add-to-group group-id="EditorTabPopupMenu"/>
       <add-to-group group-id="RunMenu" anchor="last"/>
       <add-to-group group-id="EditorPopupMenu.Run" anchor="last"/>

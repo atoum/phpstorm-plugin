@@ -4,6 +4,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.jetbrains.php.lang.psi.PhpFile;
+import org.atoum.intellij.plugin.atoum.model.RunnerConfiguration;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.jetbrains.annotations.Nullable;
@@ -16,30 +17,46 @@ import java.nio.file.Paths;
 
 public class AtoumUtils {
 
-    public static VirtualFile findTestBaseDir(PhpFile phpFile, Project project)
+    public static VirtualFile findTestBaseDir(VirtualFile currentDir, Project project)
     {
         Boolean continueSearch = true;
         Integer maxDirs = 35;
         Integer dirCount = 0;
-        PsiDirectory currentDir = phpFile.getContainingDirectory();
         while (continueSearch) {
             dirCount++;
-            if (currentDir.getVirtualFile().equals(project.getBaseDir())) {
+            if (currentDir.equals(project.getBaseDir())) {
                 continueSearch = false;
             } else if (dirCount >= maxDirs) {
                 continueSearch = false;
             } else {
-                if (new File(currentDir.getVirtualFile().getPath() + "/composer.json").exists()) {
-                    return currentDir.getVirtualFile();
+                if (new File(currentDir.getPath() + "/composer.json").exists()) {
+                    return currentDir;
                 }
             }
-            currentDir = currentDir.getParentDirectory();
+            currentDir = currentDir.getParent();
             if (null == currentDir) {
                 return project.getBaseDir();
             }
         }
 
         return project.getBaseDir();
+    }
+
+    public static VirtualFile findTestBaseDir(PhpFile phpFile, Project project)
+    {
+        return findTestBaseDir(phpFile.getContainingDirectory().getVirtualFile(), project);
+    }
+
+    public static VirtualFile findTestBaseDir(RunnerConfiguration runnerConfiguration, Project project) throws Exception {
+        if (null != runnerConfiguration.getFile()) {
+            return findTestBaseDir(runnerConfiguration.getFile(), project);
+        }
+
+        if (null != runnerConfiguration.getDirectory()) {
+            return findTestBaseDir(runnerConfiguration.getDirectory(), project);
+        }
+
+        throw new Exception("Bad configuration : no file or directory defined");
     }
 
     public static String findAtoumBinPath(VirtualFile dir)

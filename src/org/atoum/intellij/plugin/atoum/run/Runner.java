@@ -27,6 +27,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.psi.PsiDirectory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentManager;
 import com.jetbrains.php.run.PhpRunConfiguration;
@@ -37,6 +38,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.atoum.intellij.plugin.atoum.Icons;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Runner {
@@ -78,18 +80,22 @@ public class Runner {
             }
         };
 
-        String[] commandLineArgs = new String[2];
-        commandLineArgs[0] = runnerConfiguration.getFile().getVirtualFile().getPath();
-        commandLineArgs[1] = "--use-tap-report";
-        VirtualFile testBaseDir = AtoumUtils.findTestBaseDir(runnerConfiguration.getFile(), project);
-
-
         Executor executor = DefaultRunExecutor.getRunExecutorInstance();
         PhpRunConfiguration runConfiguration = new AtoumLocalRunConfiguration(project, myFactory, "test");
         TestConsoleProperties testConsoleProperties = new SMTRunnerConsoleProperties(runConfiguration, "atoum", executor);
         BaseTestsOutputConsoleView testsOutputConsoleView = SMTestRunnerConnectionUtil.createConsole("atoumConsole", testConsoleProperties);
 
         Disposer.register(project, testsOutputConsoleView);
+
+        String[] commandLineArgs = (new CommandLineArgumentsBuilder()).useTapReport().useConfiguration(runnerConfiguration).build();
+
+        VirtualFile testBaseDir = null;
+        try {
+            testBaseDir = AtoumUtils.findTestBaseDir(runnerConfiguration, project);
+        } catch (Exception e) {
+            return testsOutputConsoleView;
+        }
+
 
         ContentManager contentManager = toolWindow.getContentManager();
         Content myContent;
