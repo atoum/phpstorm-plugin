@@ -7,6 +7,7 @@
 ## Bugfix
 
 * [#53](https://github.com/atoum/phpstorm-plugin/pull/53) Remove "empty test suite" message in console when test passes ([@agallou])
+* [#56](https://github.com/atoum/phpstorm-plugin/pull/56) Display an error message when tests could not be run ([@agallou])
 
 
 # 0.5.2 - 2016-02-03
