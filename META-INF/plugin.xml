@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>com.atoum.phpstormplugin</id>
   <name>atoum plugin</name>
-  <version>0.5.1</version>
+  <version>0.5.2</version>
   <vendor email="adriengallou@gmail.com">Adrien Gallou</vendor>
 
   <description><![CDATA[
@@ -9,7 +9,7 @@
     ]]></description>
 
   <change-notes><![CDATA[
-      See https://github.com/agallou/phpstorm-plugin/blob/master/CHANGELOG.md.
+      See https://github.com/atoum/phpstorm-plugin/blob/master/CHANGELOG.md.
     ]]>
   </change-notes>
 
