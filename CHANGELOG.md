@@ -1,5 +1,9 @@
 # `dev-master`
 
+
+
+# 0.6.0 - 2016-02-07
+
 ## Features
 
 * [#45](https://github.com/atoum/phpstorm-plugin/pull/45) Tests could now be runned on windows ([@agallou])
