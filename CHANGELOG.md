@@ -4,6 +4,7 @@
 
 * [#45](https://github.com/atoum/phpstorm-plugin/pull/45) Tests could now be runned on windows ([@agallou])
 * [#55](https://github.com/atoum/phpstorm-plugin/pull/55) Tests could now be runned on an entry on the right-clic menu of the open file tabs ([@agallou])
+* [#54](https://github.com/atoum/phpstorm-plugin/pull/54) Tests could now be runned tests on a directory level ([@agallou])
 
 
 ## Bugfix
