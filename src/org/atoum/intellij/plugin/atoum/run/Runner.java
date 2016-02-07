@@ -17,6 +17,9 @@ import com.intellij.execution.testframework.sm.runner.SMTestProxy;
 import com.intellij.execution.testframework.sm.runner.ui.SMTRunnerConsoleView;
 import com.intellij.execution.testframework.sm.runner.ui.TestResultsViewer;
 import com.intellij.execution.testframework.ui.BaseTestsOutputConsoleView;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.util.Key;
@@ -173,6 +176,7 @@ public class Runner {
 
 
         } catch (ExecutionException e) {
+            Notifications.Bus.notify(new Notification("atoumGroup", "Error running tests", e.getMessage(), NotificationType.ERROR, null), project);
         }
 
         return testsOutputConsoleView;

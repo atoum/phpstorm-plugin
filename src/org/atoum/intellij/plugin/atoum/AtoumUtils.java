@@ -8,6 +8,7 @@ import org.atoum.intellij.plugin.atoum.model.RunnerConfiguration;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.jetbrains.annotations.Nullable;
+import org.apache.commons.lang.SystemUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,14 +62,19 @@ public class AtoumUtils {
     public static String findAtoumBinPath(VirtualFile dir)
     {
         String defaultBinPath = dir.getPath() + "/vendor/bin/atoum";
+        String atoumBinPath = defaultBinPath;
 
         String binDir = getComposerBinDir(dir.getPath() + "/composer.json");
         String binPath = dir.getPath() + "/" + binDir + "/atoum";
         if (null != binDir && new File(binPath).exists()) {
-            return binPath;
+            atoumBinPath = binPath;
         }
 
-        return defaultBinPath;
+        if (SystemUtils.IS_OS_WINDOWS) {
+            atoumBinPath += ".bat";
+        }
+
+        return atoumBinPath;
     }
 
     @Nullable

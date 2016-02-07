@@ -1,5 +1,15 @@
 # `dev-master`
 
+## Features
+
+* [#45](https://github.com/atoum/phpstorm-plugin/pull/45) Tests could now be runned on windows ([@agallou])
+* [#55](https://github.com/atoum/phpstorm-plugin/pull/55) Tests could now be runned on an entry on the right-clic menu of the open file tabs ([@agallou])
+
+
+## Bugfix
+
+* [#53](https://github.com/atoum/phpstorm-plugin/pull/53) Remove "empty test suite" message in console when test passes ([@agallou])
+* [#56](https://github.com/atoum/phpstorm-plugin/pull/56) Display an error message when tests could not be run ([@agallou])
 
 
 # 0.5.2 - 2016-02-03

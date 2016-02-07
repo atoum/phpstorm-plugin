@@ -17,7 +17,7 @@ public class SMTRootTestProxyFactory {
         }
 
         for (MethodResult methodsResult: classResult.getMethods()) {
-            SMTestProxy methodNode = new SMTestProxy(methodsResult.getName(), true, "");
+            SMTestProxy methodNode = new SMTestProxy(methodsResult.getName(), false, "");
 
             if (methodsResult.getState().equals(MethodResult.STATE_FAILED)) {
                 methodNode.setTestFailed(methodsResult.getName() + " Failed", methodsResult.getContent(), true);
