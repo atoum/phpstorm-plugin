@@ -1,5 +1,8 @@
 # `dev-master`
 
+## Bugfix
+
+* [#53](https://github.com/atoum/phpstorm-plugin/pull/53) Remove "empty test suite" message in console when test passes ([@agallou])
 
 
 # 0.5.2 - 2016-02-03
