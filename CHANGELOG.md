@@ -3,6 +3,8 @@
 ## Features
 
 * [#45](https://github.com/atoum/phpstorm-plugin/pull/45) Tests could now be runned on windows ([@agallou])
+* [#55](https://github.com/atoum/phpstorm-plugin/pull/55) Tests could now be runned on an entry on the right-clic menu of the open file tabs ([@agallou])
+
 
 ## Bugfix
 
