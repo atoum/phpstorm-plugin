@@ -6,6 +6,7 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.jetbrains.php.lang.psi.PhpFile;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
 import org.atoum.intellij.plugin.atoum.model.RunnerConfiguration;
@@ -22,12 +23,16 @@ public class Run extends AnAction {
         event.getPresentation().setText("atoum - run test");
 
         PhpClass currentTestClass = getCurrentTestClass(event);
-        if (currentTestClass == null) {
-            return;
+        if (currentTestClass != null) {
+            event.getPresentation().setText("atoum - run test : " + currentTestClass.getName());
+            event.getPresentation().setEnabled(true);
+        } else {
+            VirtualFile selectedDir = getCurrentTestDirectory(event);
+            if (selectedDir != null) {
+                event.getPresentation().setText("atoum - run dir");
+                event.getPresentation().setEnabled(true);
+            }
         }
-
-        event.getPresentation().setText("atoum - run test : " + currentTestClass.getName());
-        event.getPresentation().setEnabled(true);
     }
 
     protected void saveFiles(PhpClass currentTestClass, Project project) {
@@ -40,19 +45,51 @@ public class Run extends AnAction {
 
     public void actionPerformed(final AnActionEvent e) {
         PhpClass currentTestClass = getCurrentTestClass(e);
+        VirtualFile selectedDir = null;
         if (currentTestClass == null) {
-            return;
+            selectedDir = getCurrentTestDirectory(e);
+            if (null == selectedDir) {
+                return;
+            }
         }
 
         Project project = e.getProject();
 
-        saveFiles(currentTestClass, project);
-
         RunnerConfiguration runConfiguration = new RunnerConfiguration();
-        runConfiguration.setFile((PhpFile)currentTestClass.getContainingFile());
+        if (null != currentTestClass) {
+            saveFiles(currentTestClass, project);
+            runConfiguration.setFile((PhpFile)currentTestClass.getContainingFile());
+        }
+
+        if (null != selectedDir) {
+            runConfiguration.setDirectory(selectedDir);
+        }
 
         Runner runner = new Runner(project);
         runner.run(runConfiguration);
+    }
+
+
+    @Nullable
+    protected VirtualFile getCurrentTestDirectory(AnActionEvent e)
+    {
+        Object eventVirtualFile = e.getData(PlatformDataKeys.VIRTUAL_FILE);
+
+        if (null == eventVirtualFile) {
+            return null;
+        }
+
+        if (!(eventVirtualFile instanceof VirtualFile)) {
+            return null;
+        }
+
+        VirtualFile virtualFile = ((VirtualFile) eventVirtualFile);
+
+        if (!virtualFile.isDirectory()) {
+            return null;
+        }
+
+        return virtualFile;
     }
 
     @Nullable
