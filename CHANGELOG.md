@@ -1,5 +1,8 @@
 # `dev-master`
 
+## Bugfix
+
+* [#60](https://github.com/atoum/phpstorm-plugin/pull/60) Fix navigation to test class when the tested class is in the global namespace ([@agallou])
 
 
 # 0.6.0 - 2016-02-07

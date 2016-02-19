@@ -32,6 +32,13 @@ public class Utils {
 
     @Nullable
     public static Collection<PhpClass> locateTestClasses(Project project, PhpClass testedClass) {
+        if (testedClass.getNamespaceName().length() == 1) {
+            Collection<PhpClass> foundClasses = locatePhpClasses(project, getTestsNamespaceSuffix() + testedClass.getName());
+            if (foundClasses.size() > 0) {
+                return foundClasses;
+            }
+        }
+
         String[] namespaceParts = testedClass.getNamespaceName().split("\\\\");
 
         for(int i=namespaceParts.length; i>=1; i--){
