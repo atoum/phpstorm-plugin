@@ -83,7 +83,7 @@ public class Runner {
         Executor executor = DefaultRunExecutor.getRunExecutorInstance();
         PhpRunConfiguration runConfiguration = new AtoumLocalRunConfiguration(project, myFactory, "test");
         TestConsoleProperties testConsoleProperties = new SMTRunnerConsoleProperties(runConfiguration, "atoum", executor);
-        BaseTestsOutputConsoleView testsOutputConsoleView = SMTestRunnerConnectionUtil.createConsole("atoumConsole", testConsoleProperties);
+        final BaseTestsOutputConsoleView testsOutputConsoleView = SMTestRunnerConnectionUtil.createConsole("atoumConsole", testConsoleProperties);
 
         Disposer.register(project, testsOutputConsoleView);
 
@@ -147,6 +147,10 @@ public class Runner {
                     SMTRootTestProxyFactory.updateFromTestResult(testsResult, testsRootNode);
 
                     selectFirstFailedMethod();
+
+                    if (testsResult.getState().equals(testsResult.STATE_PASSED)) {
+                        TestConsoleProperties.HIDE_PASSED_TESTS.set(testsOutputConsoleView.getProperties(), false);
+                    }
                 }
 
                 protected void selectFirstFailedMethod()
