@@ -11,7 +11,7 @@ public class TestsResultFactory {
         TestsResult testsResult = new TestsResult();
 
         Pattern statusLinePattern = Pattern.compile("((?:not )?ok) (\\d+)(?: (?:# SKIP|# TODO|-) (.+)::(.+)\\(\\))?$");
-        Pattern nameLinePattern = Pattern.compile("^# (.+)::(.+)\\(\\)$");
+        Pattern nameLinePattern = Pattern.compile("^# ([\\w\\\\]+)::(.+)\\(\\)$");
 
         String[] tapOutputLines = tapOutput.split("\n");
 
