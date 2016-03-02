@@ -5,11 +5,21 @@
   <vendor email="adriengallou@gmail.com">Adrien Gallou</vendor>
 
   <description><![CDATA[
-      Integrate atoum in PHPStorm.
+      Integrate <a href="http://atoum.org/">atoum</a> in PHPStorm.<br />
+      <br />
+      Features :
+      <ul>
+        <li>Go to the test class from the tested class (shortcut : alt+shift+K)</li>
+        <li>Go to the tested class from the test class (shortcut : alt+shift+K)</li>
+        <li>Execute tests inside PhpStorm (shortcut : alt+shift+M)</li>
+        <li>Easily identify test files by a custom icon</li>
+      </ul>
+
+      More information about those features could be found in the project's <a href="https://github.com/atoum/phpstorm-plugin/blob/master/CHANGELOG.md">README</a>
     ]]></description>
 
   <change-notes><![CDATA[
-      See https://github.com/atoum/phpstorm-plugin/blob/master/CHANGELOG.md.
+      See <a href="https://github.com/atoum/phpstorm-plugin/blob/master/CHANGELOG.md">https://github.com/atoum/phpstorm-plugin/blob/master/CHANGELOG.md</a>.
     ]]>
   </change-notes>
 
