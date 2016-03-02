@@ -1,5 +1,8 @@
 # `dev-master`
 
+## Bugfix
+
+* [#62](https://github.com/atoum/phpstorm-plugin/pull/62) Fix test class method list when the test has a fatal error in test ([@agallou])
 
 
 # 0.6.1 - 2016-02-22
