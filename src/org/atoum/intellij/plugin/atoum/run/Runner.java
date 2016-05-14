@@ -27,9 +27,10 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
-import com.intellij.psi.PsiDirectory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentManager;
+import com.jetbrains.php.config.PhpProjectConfigurationFacade;
+import com.jetbrains.php.config.interpreters.PhpInterpreter;
 import com.jetbrains.php.run.PhpRunConfiguration;
 import com.jetbrains.php.run.PhpRunConfigurationFactoryBase;
 import org.atoum.intellij.plugin.atoum.AtoumUtils;
@@ -38,7 +39,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.atoum.intellij.plugin.atoum.Icons;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Runner {
@@ -87,7 +87,6 @@ public class Runner {
 
         Disposer.register(project, testsOutputConsoleView);
 
-        String[] commandLineArgs = (new CommandLineArgumentsBuilder()).useTapReport().useConfiguration(runnerConfiguration).build();
 
         VirtualFile testBaseDir = null;
         try {
@@ -96,6 +95,10 @@ public class Runner {
             return testsOutputConsoleView;
         }
 
+        String testBasePath = testBaseDir.getPath();
+        String atoumBinPath = AtoumUtils.findAtoumBinPath(testBaseDir);
+
+        String[] commandLineArgs = (new CommandLineArgumentsBuilder(atoumBinPath, testBasePath)).useTapReport().useConfiguration(runnerConfiguration).build();
 
         ContentManager contentManager = toolWindow.getContentManager();
         Content myContent;
@@ -105,15 +108,20 @@ public class Runner {
 
         final SMTRunnerConsoleView console = (SMTRunnerConsoleView)testsOutputConsoleView;
 
+        String phpPath = "php";
+        PhpInterpreter interpreter = PhpProjectConfigurationFacade.getInstance(project).getInterpreter();
+        if (null != interpreter) {
+            phpPath = interpreter.getPathToPhpExecutable();
+        }
+
         OSProcessHandler processHandler = null;
         try {
             processHandler = ScriptRunnerUtil.execute(
-                AtoumUtils.findAtoumBinPath(testBaseDir),
-                testBaseDir.getPath(),
+                phpPath,
+                testBasePath,
                 null,
                 commandLineArgs
             );
-
 
             testsOutputConsoleView.attachToProcess(processHandler);
             console.getResultsViewer().setAutoscrolls(true);
