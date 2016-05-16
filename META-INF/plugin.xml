@@ -65,7 +65,15 @@
       <add-to-group group-id="EditorPopupMenu.Run" anchor="last"/>
       <keyboard-shortcut first-keystroke="alt shift M" keymap="$default"/>
     </action>
+
+    <action id="AtoumRunAllTests" class="org.atoum.intellij.plugin.atoum.actions.RunAll"
+            icon="/org/atoum/intellij/plugin/atoum/icons/atoum_16_16.png"
+            text="run all tests">
+      <add-to-group group-id="RunMenu" anchor="last"/>
+      <keyboard-shortcut first-keystroke="alt shift V" keymap="$default"/>
+    </action>
   </actions>
+
 
 
   <depends>com.jetbrains.php</depends>

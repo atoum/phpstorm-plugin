@@ -93,7 +93,7 @@ public class Runner {
         try {
             testBaseDir = AtoumUtils.findTestBaseDir(runnerConfiguration, project);
         } catch (Exception e) {
-            return testsOutputConsoleView;
+            testBaseDir = project.getBaseDir();
         }
 
 
