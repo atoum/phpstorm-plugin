@@ -4,9 +4,10 @@ Integrates atoum into PhpStorm.
 
 Features :
 
-* Go to the test class from the tested class (shortcut : alt+shift+K)
-* Go to the tested class from the test class (shortcut : alt+shift+K)
-* Execute tests inside PhpStorm (shortcut : alt+shift+M)
+* Go to the test class from the tested class (shortcut: alt+shift+K)
+* Go to the tested class from the test class (shortcut: alt+shift+K)
+* Execute tests inside PhpStorm (shortcut: alt+shift+M)
+* Execute all project's test inside PhpStorm (shortcut: alt+shift+V)
 * Easily identify test files by a custom icon
 
 
@@ -71,6 +72,15 @@ Atoum's test files are displayed with a different icon, like that you will easil
 ![Demo](doc/custom_icon-tabs.png)
 
 ![Demo](doc/custom_icon-tree.png)
+
+
+### Execute all tests inside PhpStorm
+
+The plugin lets you run all your project's test suites inside PhpStorm. You can run them by selecting "run -> atoum - run all tests" (or with the default keyboard shortcut : alt+shift+V).
+
+atoum will be launched without a directory or file parameter, so, you will need to add something like this in your `.atoum.php` file in order to run all the tests : `$runner->addTestsFromDirectory(__DIR__ . '/tests/units');`.
+
+![Demo](doc/all.png)
 
 
 ## Installation
