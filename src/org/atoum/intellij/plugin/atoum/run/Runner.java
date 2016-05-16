@@ -25,6 +25,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.psi.PsiDirectory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentManager;
 import com.jetbrains.php.config.PhpProjectConfigurationFacade;
@@ -36,7 +37,9 @@ import org.atoum.intellij.plugin.atoum.model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.atoum.intellij.plugin.atoum.Icons;
+import java.io.File;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -103,18 +106,27 @@ public class Runner {
 
         Disposer.register(project, testsOutputConsoleView);
 
-
         VirtualFile testBaseDir = null;
         try {
             testBaseDir = AtoumUtils.findTestBaseDir(runnerConfiguration, project);
         } catch (Exception e) {
-            return testsOutputConsoleView;
+            testBaseDir = project.getBaseDir();
         }
 
         String testBasePath = testBaseDir.getPath();
         String atoumBinPath = AtoumUtils.findAtoumBinPath(testBaseDir);
 
-        String[] commandLineArgs = (new CommandLineArgumentsBuilder(atoumBinPath, testBasePath)).useTapReport().useConfiguration(runnerConfiguration).build();
+        CommandLineArgumentsBuilder commandLineBuilder = (new CommandLineArgumentsBuilder(atoumBinPath, testBasePath))
+            .useTapReport()
+            .useConfiguration(runnerConfiguration)
+        ;
+
+        String phpstormConfigFile = testBasePath + "/.atoum.phpstorm.php";
+        if (new File(phpstormConfigFile).exists()) {
+            commandLineBuilder.useConfigFile(phpstormConfigFile);
+        }
+
+        String[] commandLineArgs = commandLineBuilder.build();
 
         ContentManager contentManager = toolWindow.getContentManager();
         Content myContent;
@@ -141,6 +153,7 @@ public class Runner {
                 commandLineArgs,
                 environnmentVariables
             );
+
 
             testsOutputConsoleView.attachToProcess(processHandler);
             console.getResultsViewer().setAutoscrolls(true);

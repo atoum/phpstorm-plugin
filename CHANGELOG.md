@@ -3,10 +3,13 @@
 ## Features
 
 * [#63](https://github.com/atoum/phpstorm-plugin/pull/63) Display tests list when all tests are passed ([@agallou])
+* [#69](https://github.com/atoum/phpstorm-plugin/pull/69) Add an action to run all the tests ([@agallou])
+* [#70](https://github.com/atoum/phpstorm-plugin/pull/70) Add support for .atoum.phpstorm.php file ([@agallou])
 
 ## Bugfix
 
 * [#62](https://github.com/atoum/phpstorm-plugin/pull/62) Fix test class method list when the test has a fatal error in test ([@agallou])
+* [#68](https://github.com/atoum/phpstorm-plugin/pull/68) Fix tap parsing in version 0.0.1 of atoum ([@agallou])
 
 
 # 0.6.1 - 2016-02-22

@@ -12,6 +12,7 @@ public class TestsResultFactory {
 
         Pattern statusLinePattern = Pattern.compile("((?:not )?ok) (\\d+)(?: (?:# SKIP|# TODO|-) (.+)::(.+)\\(\\))?$");
         Pattern nameLinePattern = Pattern.compile("^# ([\\w\\\\]+)::(.+)\\(\\)$");
+        Pattern planLinePattern = Pattern.compile("^\\d+\\.\\.\\d+$");
 
         String[] tapOutputLines = tapOutput.split("\n");
 
@@ -21,9 +22,12 @@ public class TestsResultFactory {
         String currentClassname = "";
         String currentStatus = "";
 
-        //The first line contains the number of tests
-        for (Integer i = 1; i < tapOutputLines.length; i++) {
+        for (Integer i = 0; i < tapOutputLines.length; i++) {
             String currentLine = tapOutputLines[i];
+
+            if (i == 0 && planLinePattern.matcher(currentLine).matches()) {
+                continue;
+            }
 
             Matcher statusLineMatcher = statusLinePattern.matcher(currentLine);
 
