@@ -1,5 +1,8 @@
 # `dev-master`
 
+
+# 0.7.0 - 2016-05-16
+
 ## Features
 
 * [#63](https://github.com/atoum/phpstorm-plugin/pull/63) Display tests list when all tests are passed ([@agallou])
