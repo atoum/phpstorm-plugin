@@ -83,6 +83,20 @@ atoum will be launched without a directory or file parameter, so, you will need 
 ![Demo](doc/all.png)
 
 
+### Customize atoum's settings for running inside PhpStorm
+
+#### Via `.atoum.phpstorm.php`
+
+If you want to customize the way tests are launched only when launched inside phpstorm, your can create a `.atoum.phpstorm.php` file. If it exists, the file will be loaded with the `-c` option.
+
+For example:
+
+```php
+// .atoum.phpstorm.php
+$script->setMaxChildrenNumber(1);
+```
+
+
 ## Installation
 
 ### Inside PhpStorm (recommended)
