@@ -4,6 +4,7 @@
 
 * [#63](https://github.com/atoum/phpstorm-plugin/pull/63) Display tests list when all tests are passed ([@agallou])
 * [#69](https://github.com/atoum/phpstorm-plugin/pull/69) Add an action to run all the tests ([@agallou])
+* [#70](https://github.com/atoum/phpstorm-plugin/pull/70) Add support for .atoum.phpstorm.php file ([@agallou])
 
 ## Bugfix
 
