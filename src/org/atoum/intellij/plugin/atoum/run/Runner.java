@@ -37,6 +37,7 @@ import org.atoum.intellij.plugin.atoum.model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.atoum.intellij.plugin.atoum.Icons;
+import java.io.File;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -87,8 +88,6 @@ public class Runner {
 
         Disposer.register(project, testsOutputConsoleView);
 
-        String[] commandLineArgs = (new CommandLineArgumentsBuilder()).useTapReport().useConfiguration(runnerConfiguration).build();
-
         VirtualFile testBaseDir = null;
         try {
             testBaseDir = AtoumUtils.findTestBaseDir(runnerConfiguration, project);
@@ -96,6 +95,17 @@ public class Runner {
             testBaseDir = project.getBaseDir();
         }
 
+        CommandLineArgumentsBuilder commandLineBuilder = (new CommandLineArgumentsBuilder())
+            .useTapReport()
+            .useConfiguration(runnerConfiguration)
+        ;
+
+        String phpstormConfigFile = testBaseDir.getPath() + "/.atoum.phpstorm.php";
+        if (new File(phpstormConfigFile).exists()) {
+            commandLineBuilder.useConfigFile(phpstormConfigFile);
+        }
+
+        String[] commandLineArgs = commandLineBuilder.build();
 
         ContentManager contentManager = toolWindow.getContentManager();
         Content myContent;

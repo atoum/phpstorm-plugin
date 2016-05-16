@@ -20,6 +20,14 @@ public class CommandLineArgumentsBuilder {
         return this;
     }
 
+    public CommandLineArgumentsBuilder useConfigFile(String configFilePath)
+    {
+        this.commandLineArgs.add("-c");
+        this.commandLineArgs.add(configFilePath);
+
+        return this;
+    }
+
     public CommandLineArgumentsBuilder useConfiguration(RunnerConfiguration runnerConfiguration)
     {
         if (null != runnerConfiguration.getDirectory()) {
