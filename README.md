@@ -4,9 +4,10 @@ Integrates atoum into PhpStorm.
 
 Features :
 
-* Go to the test class from the tested class (shortcut : alt+shift+K)
-* Go to the tested class from the test class (shortcut : alt+shift+K)
-* Execute tests inside PhpStorm (shortcut : alt+shift+M)
+* Go to the test class from the tested class (shortcut: alt+shift+K)
+* Go to the tested class from the test class (shortcut: alt+shift+K)
+* Execute tests inside PhpStorm (shortcut: alt+shift+M)
+* Execute all project's test inside PhpStorm (shortcut: alt+shift+V)
 * Easily identify test files by a custom icon
 
 
@@ -73,6 +74,29 @@ Atoum's test files are displayed with a different icon, like that you will easil
 ![Demo](doc/custom_icon-tree.png)
 
 
+### Execute all tests inside PhpStorm
+
+The plugin lets you run all your project's test suites inside PhpStorm. You can run them by selecting "run -> atoum - run all tests" (or with the default keyboard shortcut : alt+shift+V).
+
+atoum will be launched without a directory or file parameter, so, you will need to add something like this in your `.atoum.php` file in order to run all the tests : `$runner->addTestsFromDirectory(__DIR__ . '/tests/units');`.
+
+![Demo](doc/all.png)
+
+
+### Customize atoum's settings for running inside PhpStorm
+
+#### Via `.atoum.phpstorm.php`
+
+If you want to customize the way tests are launched only when launched inside phpstorm, your can create a `.atoum.phpstorm.php` file. If it exists, the file will be loaded with the `-c` option.
+
+For example:
+
+```php
+// .atoum.phpstorm.php
+$script->setMaxChildrenNumber(1);
+```
+
+
 ## Launch tests inside a docker container
 
 (this also works to launch test with a different version of php than the default)
@@ -98,6 +122,7 @@ docker run -v `pwd`:/var/www -w /var/www php:7 php $@
 ![Demo](doc/interpreter.png)
 
 Now, your tests will be executed inside a docker container.
+
 
 ## Installation
 
