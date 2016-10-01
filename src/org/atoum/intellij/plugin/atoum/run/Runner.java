@@ -3,12 +3,10 @@ package org.atoum.intellij.plugin.atoum.run;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.Executor;
 import com.intellij.execution.configurations.ConfigurationFactory;
+import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.execution.executors.DefaultRunExecutor;
-import com.intellij.execution.process.OSProcessHandler;
-import com.intellij.execution.process.ProcessAdapter;
-import com.intellij.execution.process.ProcessEvent;
-import com.intellij.execution.process.ScriptRunnerUtil;
+import com.intellij.execution.process.*;
 import com.intellij.execution.testframework.TestConsoleProperties;
 import com.intellij.execution.testframework.TestFrameworkRunningModel;
 import com.intellij.execution.testframework.sm.SMTestRunnerConnectionUtil;
@@ -43,6 +41,8 @@ import java.io.File;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Runner {
 
@@ -73,6 +73,22 @@ public class Runner {
         toolWindow.show(null);
 
         return toolWindow;
+    }
+
+    // like
+    //   https://github.com/JetBrains/intellij-community/blob/6555e34dc0b5c4bd3a8c9efc7d8e5ca84929af40/platform/platform-impl/src/com/intellij/execution/process/ScriptRunnerUtil.java
+    // with not log and charset support
+    // but with environment variables support
+    protected OSProcessHandler prepareProcessHandler(@NotNull String exePath, @Nullable String workingDirectory, String[] parameters, @Nullable Map<String, String> environment) throws ExecutionException {
+        GeneralCommandLine commandLine = new GeneralCommandLine(exePath);
+        commandLine.addParameters(parameters);
+        if (workingDirectory != null) {
+            commandLine.setWorkDirectory(workingDirectory);
+        }
+
+        commandLine.withEnvironment(environment);
+
+        return new ColoredProcessHandler(commandLine);
     }
 
     public BaseTestsOutputConsoleView getConsole(ToolWindow toolWindow, Project project, final RunnerConfiguration runnerConfiguration) {
@@ -126,13 +142,16 @@ public class Runner {
 
         String[] commandLineArgs = commandLineBuilder.build();
 
+        HashMap environnmentVariables = new HashMap();
+        environnmentVariables.put("PHPSTORM", "1");
+
         OSProcessHandler processHandler = null;
         try {
-            processHandler = ScriptRunnerUtil.execute(
+            processHandler = this.prepareProcessHandler(
                 phpPath,
                 testBasePath,
-                null,
-                commandLineArgs
+                commandLineArgs,
+                environnmentVariables
             );
 
 
