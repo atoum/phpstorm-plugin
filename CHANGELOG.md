@@ -1,5 +1,7 @@
 # `dev-master`
 
+# 0.8.0 - 2016-10-01
+
 ## Features
 
 * [#71](https://github.com/atoum/phpstorm-plugin/pull/71) Add support for launching tests with php interpreters
