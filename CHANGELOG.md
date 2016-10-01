@@ -1,5 +1,9 @@
 # `dev-master`
 
+## Features
+
+* [#71](https://github.com/atoum/phpstorm-plugin/pull/71) Add support for launching tests with php interpreters
+* [#73](https://github.com/atoum/phpstorm-plugin/pull/73) Add an environment variable PHPSTORM when launching tests
 
 # 0.7.0 - 2016-05-16
 
