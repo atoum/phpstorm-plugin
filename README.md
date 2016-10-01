@@ -97,6 +97,33 @@ $script->setMaxChildrenNumber(1);
 ```
 
 
+## Launch tests inside a docker container
+
+(this also works to launch test with a different version of php than the default)
+
+### Add a php executable file
+
+In the project's directory, were create a file named `php`. For example in a `docker/bin` directory:
+
+```bash
+# docker/bin/php
+docker run -v `pwd`:/var/www -w /var/www php:7 php $@
+```
+
+
+### Configure PhpStorm to use this interpreter
+
+* Open `File -> Settings`
+* Go to `Language & Frameworks -> PHP`
+* Click on the button on the right of the "Interpreter" select
+* Click on the `+`
+* Choose the file created previously as `PHP executable`. For example `/home/user/tmp/test_php7/docker/bin/php`.
+
+![Demo](doc/interpreter.png)
+
+Now, your tests will be executed inside a docker container.
+
+
 ## Installation
 
 ### Inside PhpStorm (recommended)

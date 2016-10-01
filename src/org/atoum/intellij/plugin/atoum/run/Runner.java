@@ -30,6 +30,8 @@ import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentManager;
+import com.jetbrains.php.config.PhpProjectConfigurationFacade;
+import com.jetbrains.php.config.interpreters.PhpInterpreter;
 import com.jetbrains.php.run.PhpRunConfiguration;
 import com.jetbrains.php.run.PhpRunConfigurationFactoryBase;
 import org.atoum.intellij.plugin.atoum.AtoumUtils;
@@ -95,17 +97,24 @@ public class Runner {
             testBaseDir = project.getBaseDir();
         }
 
-        CommandLineArgumentsBuilder commandLineBuilder = (new CommandLineArgumentsBuilder())
+        String testBasePath = testBaseDir.getPath();
+        String atoumBinPath = AtoumUtils.findAtoumBinPath(testBaseDir);
+
+        String phpPath = "php";
+        PhpInterpreter interpreter = PhpProjectConfigurationFacade.getInstance(project).getInterpreter();
+        if (null != interpreter) {
+            phpPath = interpreter.getPathToPhpExecutable();
+        }
+
+        CommandLineArgumentsBuilder commandLineBuilder = (new CommandLineArgumentsBuilder(atoumBinPath, testBasePath, interpreter.getConfigurationOptions()))
             .useTapReport()
             .useConfiguration(runnerConfiguration)
         ;
 
-        String phpstormConfigFile = testBaseDir.getPath() + "/.atoum.phpstorm.php";
+        String phpstormConfigFile = testBasePath + "/.atoum.phpstorm.php";
         if (new File(phpstormConfigFile).exists()) {
             commandLineBuilder.useConfigFile(phpstormConfigFile);
         }
-
-        String[] commandLineArgs = commandLineBuilder.build();
 
         ContentManager contentManager = toolWindow.getContentManager();
         Content myContent;
@@ -115,11 +124,13 @@ public class Runner {
 
         final SMTRunnerConsoleView console = (SMTRunnerConsoleView)testsOutputConsoleView;
 
+        String[] commandLineArgs = commandLineBuilder.build();
+
         OSProcessHandler processHandler = null;
         try {
             processHandler = ScriptRunnerUtil.execute(
-                AtoumUtils.findAtoumBinPath(testBaseDir),
-                testBaseDir.getPath(),
+                phpPath,
+                testBasePath,
                 null,
                 commandLineArgs
             );
