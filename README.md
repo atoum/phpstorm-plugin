@@ -96,6 +96,17 @@ For example:
 $script->setMaxChildrenNumber(1);
 ```
 
+#### Via `atoum.php`
+
+If you want to customize the way tests are launched only when launched inside phpstorm, your can create add some conditions in your `.atoum.php` file : the plugin exposes an environment variable called `PHPSTORM` with value `1`.
+
+For example:
+```php
+// .atoum.php
+if (getenv("PHPSTORM")) {
+  $script->setMaxChildrenNumber(1);
+}
+```
 
 ## Launch tests inside a docker container
 
