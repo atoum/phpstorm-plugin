@@ -1,10 +1,12 @@
 package org.atoum.intellij.plugin.atoum.run;
 
+import com.jetbrains.php.config.interpreters.PhpConfigurationOptionData;
 import org.atoum.intellij.plugin.atoum.model.RunnerConfiguration;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class CommandLineArgumentsBuilder {
 
@@ -16,6 +18,14 @@ public class CommandLineArgumentsBuilder {
         this.baseDir = baseDir;
         this.commandLineArgs = new ArrayList<String>();
         this.commandLineArgs.add(this.relativizePath(atoumPath));
+    }
+
+    public CommandLineArgumentsBuilder(String atoumPath, String baseDir, List<PhpConfigurationOptionData> phpOptions)
+    {
+        this(atoumPath, baseDir);
+        for (PhpConfigurationOptionData configurationOption : phpOptions) {
+            this.addPhpOption(configurationOption);
+        }
     }
 
     public CommandLineArgumentsBuilder useTapReport()
@@ -55,5 +65,10 @@ public class CommandLineArgumentsBuilder {
     protected String relativizePath(String path)
     {
         return new File(this.baseDir).toURI().relativize(new File(path).toURI()).getPath();
+    }
+
+    protected void addPhpOption(PhpConfigurationOptionData configurationOptionData)
+    {
+        this.commandLineArgs.add(0, "-d" + configurationOptionData.getName() + "=" + configurationOptionData.getValue());
     }
 }
