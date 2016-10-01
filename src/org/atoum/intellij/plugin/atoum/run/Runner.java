@@ -100,7 +100,13 @@ public class Runner {
         String testBasePath = testBaseDir.getPath();
         String atoumBinPath = AtoumUtils.findAtoumBinPath(testBaseDir);
 
-        CommandLineArgumentsBuilder commandLineBuilder = (new CommandLineArgumentsBuilder(atoumBinPath, testBasePath))
+        String phpPath = "php";
+        PhpInterpreter interpreter = PhpProjectConfigurationFacade.getInstance(project).getInterpreter();
+        if (null != interpreter) {
+            phpPath = interpreter.getPathToPhpExecutable();
+        }
+
+        CommandLineArgumentsBuilder commandLineBuilder = (new CommandLineArgumentsBuilder(atoumBinPath, testBasePath, interpreter.getConfigurationOptions()))
             .useTapReport()
             .useConfiguration(runnerConfiguration)
         ;
@@ -110,8 +116,6 @@ public class Runner {
             commandLineBuilder.useConfigFile(phpstormConfigFile);
         }
 
-        String[] commandLineArgs = commandLineBuilder.build();
-
         ContentManager contentManager = toolWindow.getContentManager();
         Content myContent;
         myContent = toolWindow.getContentManager().getFactory().createContent(testsOutputConsoleView.getComponent(), "tests results", false);
@@ -120,11 +124,7 @@ public class Runner {
 
         final SMTRunnerConsoleView console = (SMTRunnerConsoleView)testsOutputConsoleView;
 
-        String phpPath = "php";
-        PhpInterpreter interpreter = PhpProjectConfigurationFacade.getInstance(project).getInterpreter();
-        if (null != interpreter) {
-            phpPath = interpreter.getPathToPhpExecutable();
-        }
+        String[] commandLineArgs = commandLineBuilder.build();
 
         OSProcessHandler processHandler = null;
         try {
