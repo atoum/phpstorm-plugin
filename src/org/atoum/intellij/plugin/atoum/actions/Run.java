@@ -7,7 +7,9 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiElement;
 import com.jetbrains.php.lang.psi.PhpFile;
+import com.jetbrains.php.lang.psi.elements.Method;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
 import org.atoum.intellij.plugin.atoum.model.RunnerConfiguration;
 import org.atoum.intellij.plugin.atoum.run.Runner;
@@ -24,8 +26,13 @@ public class Run extends AnAction {
 
         PhpClass currentTestClass = getCurrentTestClass(event);
         if (currentTestClass != null) {
-            event.getPresentation().setText("atoum - run test : " + currentTestClass.getName());
             event.getPresentation().setEnabled(true);
+            Method currentTestMethod = getCurrentTestMethod(event);
+            if (currentTestMethod != null) {
+                event.getPresentation().setText("atoum - run " + currentTestClass.getName() + "::" + currentTestMethod.getName());
+            } else {
+                event.getPresentation().setText("atoum - run test : " + currentTestClass.getName());
+            }
         } else {
             VirtualFile selectedDir = getCurrentTestDirectory(event);
             if (selectedDir != null) {
@@ -59,6 +66,11 @@ public class Run extends AnAction {
         if (null != currentTestClass) {
             saveFiles(currentTestClass, project);
             runConfiguration.setFile((PhpFile)currentTestClass.getContainingFile());
+
+            Method currentTestMethod = getCurrentTestMethod(e);
+            if (currentTestMethod != null) {
+                runConfiguration.setMethod(currentTestMethod);
+            }
         }
 
         if (null != selectedDir) {
@@ -115,5 +127,19 @@ public class Run extends AnAction {
         }
 
         return currentClass;
+    }
+
+    @Nullable
+    protected Method getCurrentTestMethod(AnActionEvent e) {
+        PsiElement psiElement = e.getData(PlatformDataKeys.PSI_ELEMENT);
+
+        if (psiElement != null && psiElement instanceof Method) {
+            Method method = (Method) psiElement;
+            if (method.getName().startsWith("test")) {
+                return method;
+            }
+        }
+
+        return null;
     }
 }
