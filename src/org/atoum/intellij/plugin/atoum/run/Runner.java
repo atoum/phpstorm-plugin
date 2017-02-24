@@ -181,8 +181,14 @@ public class Runner {
 
                 @Override
                 public void onTestingFinished(TestResultsViewer testResultsViewer) {
+                    SMTestProxy testsRootNode = testResultsViewer.getTestsRootNode();
+
+                    if (outputBuilder.length() == 0) {
+                        testsRootNode.setTestFailed("No tests were found!", "", true);
+                        return;
+                    }
+
                     TestsResult testsResult = TestsResultFactory.createFromTapOutput(outputBuilder.toString());
-                    SMTestProxy testsRootNode = console.getResultsViewer().getTestsRootNode();
 
                     SMTRootTestProxyFactory.updateFromTestResult(testsResult, testsRootNode);
 
