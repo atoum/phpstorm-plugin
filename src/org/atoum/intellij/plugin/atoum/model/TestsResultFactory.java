@@ -47,7 +47,7 @@ public class TestsResultFactory {
                 if (nameLineMatcher.matches()) {
                     currentClassname = nameLineMatcher.group(1);
                     currentMethodName = nameLineMatcher.group(2);
-                } else {
+                } else if (currentLine.length() > 0) {
                     currentContent += currentLine.substring(1) + "\n";
                 }
             }
