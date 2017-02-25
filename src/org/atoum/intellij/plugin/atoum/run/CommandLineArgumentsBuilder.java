@@ -53,6 +53,10 @@ public class CommandLineArgumentsBuilder {
             this.commandLineArgs.add("-f");
             this.commandLineArgs.add(this.relativizePath(runnerConfiguration.getFile().getVirtualFile().getPath()));
         }
+        if (null != runnerConfiguration.getMethod()) {
+            this.commandLineArgs.add("-m");
+            this.commandLineArgs.add("*::" + runnerConfiguration.getMethod().getName());
+        }
 
         return this;
     }
