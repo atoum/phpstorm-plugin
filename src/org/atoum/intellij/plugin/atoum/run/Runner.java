@@ -29,6 +29,7 @@ import com.intellij.psi.PsiDirectory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentManager;
 import com.jetbrains.php.config.PhpProjectConfigurationFacade;
+import com.jetbrains.php.config.interpreters.PhpConfigurationOptionData;
 import com.jetbrains.php.config.interpreters.PhpInterpreter;
 import com.jetbrains.php.run.PhpRunConfiguration;
 import com.jetbrains.php.run.PhpRunConfigurationFactoryBase;
@@ -39,10 +40,7 @@ import org.jetbrains.annotations.Nullable;
 import org.atoum.intellij.plugin.atoum.Icons;
 import java.io.File;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Runner {
 
@@ -122,7 +120,14 @@ public class Runner {
             phpPath = interpreter.getPathToPhpExecutable();
         }
 
-        CommandLineArgumentsBuilder commandLineBuilder = (new CommandLineArgumentsBuilder(atoumBinPath, testBasePath, interpreter.getConfigurationOptions()))
+        List<PhpConfigurationOptionData> phpConfig;
+        try {
+            phpConfig = interpreter.getConfigurationOptions();
+        } catch (NullPointerException e) {
+            phpConfig = new ArrayList<PhpConfigurationOptionData>();
+        }
+
+        CommandLineArgumentsBuilder commandLineBuilder = (new CommandLineArgumentsBuilder(atoumBinPath, testBasePath, phpConfig))
             .useTapReport()
             .useConfiguration(runnerConfiguration)
         ;
