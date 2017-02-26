@@ -1,8 +1,11 @@
 # `dev-master`
 
-## Bugfix
+## Features
 
 * [#79](https://github.com/atoum/phpstorm-plugin/pull/79) Right click on a test method permit to run a specific method ([@vdechenaux])
+
+## Bugfix
+
 * [#80](https://github.com/atoum/phpstorm-plugin/pull/80) Add "no tests were found" error ([@vdechenaux])
 * [#81](https://github.com/atoum/phpstorm-plugin/pull/81) Fix nullpointerException when the interpreter does not have a configuration ([@agallou])
 
