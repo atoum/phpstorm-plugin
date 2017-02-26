@@ -1,5 +1,8 @@
 # `dev-master`
 
+
+# 0.9.0 - 2017-02-26
+
 ## Features
 
 * [#79](https://github.com/atoum/phpstorm-plugin/pull/79) Right click on a test method permit to run a specific method ([@vdechenaux])
