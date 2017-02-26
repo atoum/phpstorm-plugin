@@ -2,17 +2,17 @@
 
 ## Bugfix
 
-* [#79](https://github.com/atoum/phpstorm-plugin/pull/79) Right click on a test method permit to run a specific method
-* [#80](https://github.com/atoum/phpstorm-plugin/pull/80) Add "no tests were found" error
-* [#81](https://github.com/atoum/phpstorm-plugin/pull/81) Fix nullpointerException when the interpreter does not have a configuration
+* [#79](https://github.com/atoum/phpstorm-plugin/pull/79) Right click on a test method permit to run a specific method ([@vdechenaux])
+* [#80](https://github.com/atoum/phpstorm-plugin/pull/80) Add "no tests were found" error ([@vdechenaux])
+* [#81](https://github.com/atoum/phpstorm-plugin/pull/81) Fix nullpointerException when the interpreter does not have a configuration ([@agallou])
 
 
 # 0.8.0 - 2016-10-01
 
 ## Features
 
-* [#71](https://github.com/atoum/phpstorm-plugin/pull/71) Add support for launching tests with php interpreters
-* [#73](https://github.com/atoum/phpstorm-plugin/pull/73) Add an environment variable PHPSTORM when launching tests
+* [#71](https://github.com/atoum/phpstorm-plugin/pull/71) Add support for launching tests with php interpreters ([@agallou])
+* [#73](https://github.com/atoum/phpstorm-plugin/pull/73) Add an environment variable PHPSTORM when launching tests ([@agallou])
 
 # 0.7.0 - 2016-05-16
 
@@ -134,3 +134,4 @@
 
 
 [@agallou]: https://github.com/agallou
+[@vdechenaux]: https://github.com/vdechenaux
