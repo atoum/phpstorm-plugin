@@ -17,7 +17,21 @@ public class Utils {
 
     public static Boolean isClassAtoumTest(PhpClass checkedClass)
     {
-        return checkedClass.getNamespaceName().toLowerCase().contains(getTestsNamespaceSuffix().toLowerCase());
+        // First, we check if the class is in the units tests namespace
+        if (!checkedClass.getNamespaceName().toLowerCase().contains(getTestsNamespaceSuffix().toLowerCase())) {
+            return false;
+        }
+
+        // We also check if the class extends atoum
+        while (checkedClass.getSuperClass() != null) {
+            PhpClass parent = checkedClass.getSuperClass();
+            if (parent.getFQN().equals("\\atoum")) {
+                return true;
+            }
+            checkedClass = parent;
+        }
+
+        return false;
     }
 
     @Nullable
@@ -97,5 +111,18 @@ public class Utils {
     public static PhpClass getFirstClassFromFile(PhpFile phpFile) {
         Collection<PhpClass> phpClasses = PsiTreeUtil.collectElementsOfType(phpFile, PhpClass.class);
         return phpClasses.size() == 0 ? null : phpClasses.iterator().next();
+    }
+
+    @Nullable
+    public static PhpClass getFirstTestClassFromFile(PhpFile phpFile) {
+        Collection<PhpClass> phpClasses = PsiTreeUtil.collectElementsOfType(phpFile, PhpClass.class);
+
+        for (PhpClass phpClass:phpClasses) {
+            if (isClassAtoumTest(phpClass)) {
+                return phpClass;
+            }
+        }
+
+        return null;
     }
 }

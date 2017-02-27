@@ -57,15 +57,18 @@ public class SwitchContext extends AnAction {
 
     @Nullable
     protected PhpClass getSwitchClass(Project project, PhpFile phpFile) {
-        PhpClass currentClass = Utils.getFirstClassFromFile(phpFile);
-        if (null == currentClass) {
-            return null;
-        }
-
-        if (Utils.isClassAtoumTest(currentClass)) {
+        PhpClass currentClass = Utils.getFirstTestClassFromFile(phpFile);
+        if (currentClass != null) {
+            // The file contains a test class, switch to the tested class
             return Utils.locateTestedClass(project, currentClass);
         }
 
-        return Utils.locateTestClass(project, currentClass);
+        currentClass = Utils.getFirstClassFromFile(phpFile);
+        if (currentClass != null) {
+            // The file contains a class, switch to the test class if it exists
+            return Utils.locateTestClass(project, currentClass);
+        }
+
+        return null;
     }
 }
