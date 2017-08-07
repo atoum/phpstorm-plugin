@@ -1,4 +1,4 @@
-# atoum PhpStorm Plugin
+# atoum PhpStorm Plugin [![Build Status](https://travis-ci.org/atoum/phpstorm-plugin.svg?branch=master)](https://travis-ci.org/atoum/phpstorm-plugin) 
 
 Integrates atoum into PhpStorm.
 
