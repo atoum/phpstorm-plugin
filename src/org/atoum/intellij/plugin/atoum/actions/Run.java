@@ -43,11 +43,20 @@ public class Run extends AnAction {
     }
 
     protected void saveFiles(PhpClass currentTestClass, Project project) {
-        Document documentTestClass = FileDocumentManager.getInstance().getDocument(currentTestClass.getContainingFile().getVirtualFile());
-        Document documentTestedClass = FileDocumentManager.getInstance().getDocument(Utils.locateTestedClass(project, currentTestClass).getContainingFile().getVirtualFile());
-        FileDocumentManager.getInstance().saveDocument(documentTestClass);
-        FileDocumentManager.getInstance().saveDocument(documentTestedClass);
+        FileDocumentManager fileDocumentManager = FileDocumentManager.getInstance();
 
+        Document documentTestClass = fileDocumentManager.getDocument(currentTestClass.getContainingFile().getVirtualFile());
+        if (documentTestClass != null) {
+            fileDocumentManager.saveDocument(documentTestClass);
+        }
+
+        PhpClass currentTestedClass = Utils.locateTestedClass(project, currentTestClass);
+        if (currentTestedClass != null) {
+            Document documentTestedClass = fileDocumentManager.getDocument(currentTestedClass.getContainingFile().getVirtualFile());
+            if (documentTestedClass != null) {
+                fileDocumentManager.saveDocument(documentTestedClass);
+            }
+        }
     }
 
     public void actionPerformed(final AnActionEvent e) {
