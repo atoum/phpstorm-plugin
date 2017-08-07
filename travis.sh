@@ -31,7 +31,6 @@ function download {
 
 if [ -d ./idea  ]; then
     rm -rf idea
-    mkdir idea
     echo "created idea dir"
 fi
 
@@ -54,9 +53,9 @@ unzip -qo $travisCache/phpstorm-${ideaVersion}-php.zip -d ./plugins
 
 # Run the tests
 if [ "$1" = "-d" ]; then
-    ant -d -f build-test.xml -DIDEA_HOME=./idea
+    ant -d -f build-test.xml -Didea.build=./idea
 else
-    ant -f build-test.xml -DIDEA_HOME=./idea
+    ant -f build-test.xml -Didea.build=./idea
 fi
 
 # Was our build successful?
