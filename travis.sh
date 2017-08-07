@@ -1,6 +1,7 @@
 #!/bin/bash
 
-ideaVersion="2017.1"
+ideaVersion="2017.1.5"
+ideaPluginVersion="2017.1"
 
 travisCache=".cache"
 
@@ -48,8 +49,8 @@ if [ -d ./plugins ]; then
     echo "created plugin dir"
 fi
 
-download "http://phpstorm.espend.de/files/proxy/phpstorm-${ideaVersion}-php.zip"
-unzip -qo $travisCache/phpstorm-${ideaVersion}-php.zip -d ./plugins
+download "http://phpstorm.espend.de/files/proxy/phpstorm-${ideaPluginVersion}-php.zip"
+unzip -qo $travisCache/phpstorm-${ideaPluginVersion}-php.zip -d ./plugins
 
 # Run the tests
 if [ "$1" = "-d" ]; then
