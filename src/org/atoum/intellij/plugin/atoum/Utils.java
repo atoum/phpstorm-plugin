@@ -22,6 +22,10 @@ public class Utils {
             return false;
         }
 
+        if (checkedClass.isAbstract() || checkedClass.isInterface()) {
+            return false;
+        }
+
         // We also check if the class extends atoum
         while (checkedClass.getSuperClass() != null) {
             PhpClass parent = checkedClass.getSuperClass();
