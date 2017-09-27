@@ -2,12 +2,14 @@ package org.atoum.intellij.plugin.atoum.actions;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
+import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.php.lang.psi.PhpFile;
 import com.jetbrains.php.lang.psi.elements.Method;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
@@ -94,17 +96,11 @@ public class Run extends AnAction {
     @Nullable
     protected VirtualFile getCurrentTestDirectory(AnActionEvent e)
     {
-        Object eventVirtualFile = e.getData(PlatformDataKeys.VIRTUAL_FILE);
+        VirtualFile virtualFile = getVirtualFile(e);
 
-        if (null == eventVirtualFile) {
+        if (null == virtualFile) {
             return null;
         }
-
-        if (!(eventVirtualFile instanceof VirtualFile)) {
-            return null;
-        }
-
-        VirtualFile virtualFile = ((VirtualFile) eventVirtualFile);
 
         if (!virtualFile.isDirectory()) {
             return null;
@@ -115,16 +111,11 @@ public class Run extends AnAction {
 
     @Nullable
     protected PhpClass getCurrentTestClass(AnActionEvent e) {
-        Object psiFile = e.getData(PlatformDataKeys.PSI_FILE);
+        PhpFile phpFile = getPhpFile(e);
 
-        if (null == psiFile) {
+        if (null == phpFile) {
             return null;
         }
-
-        if (!(psiFile instanceof PhpFile)) {
-            return null;
-        }
-        PhpFile phpFile = ((PhpFile) psiFile);
 
         PhpClass currentClass = Utils.getFirstClassFromFile(phpFile);
         if (null == currentClass) {
@@ -140,15 +131,43 @@ public class Run extends AnAction {
 
     @Nullable
     protected Method getCurrentTestMethod(AnActionEvent e) {
-        PsiElement psiElement = e.getData(PlatformDataKeys.PSI_ELEMENT);
+        PhpFile file = getPhpFile(e);
+        Editor editor = getEditor(e);
 
-        if (psiElement != null && psiElement instanceof Method) {
-            Method method = (Method) psiElement;
-            if (method.getName().startsWith("test")) {
-                return method;
-            }
+        if (file == null || editor == null) {
+            return null;
+        }
+
+        Method method = PsiTreeUtil.findElementOfClassAtOffset(file, editor.getCaretModel().getOffset(), Method.class, false);
+
+        if (method != null && method.getName().startsWith("test")) {
+            return method;
         }
 
         return null;
+    }
+
+    @Nullable
+    private PhpFile getPhpFile(AnActionEvent e)
+    {
+        PsiFile file = e.getData(CommonDataKeys.PSI_FILE);
+
+        if (file instanceof PhpFile) {
+            return (PhpFile) file;
+        }
+
+        return null;
+    }
+
+    @Nullable
+    private Editor getEditor(AnActionEvent e)
+    {
+        return CommonDataKeys.EDITOR.getData(e.getDataContext());
+    }
+
+    @Nullable
+    private VirtualFile getVirtualFile(AnActionEvent e)
+    {
+        return CommonDataKeys.VIRTUAL_FILE.getData(e.getDataContext());
     }
 }
