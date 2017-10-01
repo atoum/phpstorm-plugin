@@ -12,6 +12,8 @@ public class UtilsTest extends LightCodeInsightFixtureTestCase {
         super.setUp();
 
         myFixture.copyFileToProject("atoum.php");
+        myFixture.copyDirectoryToProject("tests", "tests");
+        myFixture.copyDirectoryToProject("src", "src");
     }
 
     protected String getTestDataPath() {
@@ -20,13 +22,13 @@ public class UtilsTest extends LightCodeInsightFixtureTestCase {
 
     public void testGetFirstClassFromFile() {
         PhpClass phpClass = Utils.getFirstClassFromFile((PhpFile) myFixture.configureByFile(
-            "TestSimpleClass.php"
+            "tests/TestSimpleClass.php"
         ));
         assertNotNull(phpClass);
         assertEquals("\\PhpStormPlugin\\tests\\units\\TestSimpleClass", phpClass.getFQN());
 
         phpClass = Utils.getFirstClassFromFile((PhpFile) myFixture.configureByFile(
-            "TestMultipleClassNotFirst.php"
+            "tests/TestMultipleClassNotFirst.php"
         ));
         assertNotNull(phpClass);
         assertEquals("\\PhpStormPlugin\\tests\\units\\AnotherClassDefinedBeforeTheTest", phpClass.getFQN());
@@ -34,37 +36,103 @@ public class UtilsTest extends LightCodeInsightFixtureTestCase {
 
     public void testGetFirstTestClassFromFile() {
         PhpClass phpClass = Utils.getFirstTestClassFromFile((PhpFile) myFixture.configureByFile(
-            "TestSimpleClass.php"
+            "tests/TestSimpleClass.php"
         ));
         assertNotNull(phpClass);
         assertEquals("\\PhpStormPlugin\\tests\\units\\TestSimpleClass", phpClass.getFQN());
 
         phpClass = Utils.getFirstTestClassFromFile((PhpFile) myFixture.configureByFile(
-            "TestMultipleClassNotFirst.php"
+            "tests/TestMultipleClassNotFirst.php"
         ));
         assertNotNull(phpClass);
         assertEquals("\\PhpStormPlugin\\tests\\units\\TestMultipleClassNotFirst", phpClass.getFQN());
 
         phpClass = Utils.getFirstTestClassFromFile((PhpFile) myFixture.configureByFile(
-            "TestSimpleClassWithoutUse.php"
+            "tests/TestSimpleClassWithoutUse.php"
         ));
         assertNotNull(phpClass);
         assertEquals("\\PhpStormPlugin\\tests\\units\\TestSimpleClassWithoutUse", phpClass.getFQN());
 
         phpClass = Utils.getFirstTestClassFromFile((PhpFile) myFixture.configureByFile(
-            "TestWithParentClass.php"
+            "tests/TestWithParentClass.php"
         ));
         assertNotNull(phpClass);
         assertEquals("\\PhpStormPlugin\\tests\\units\\TestWithParentClass", phpClass.getFQN());
 
         phpClass = Utils.getFirstTestClassFromFile((PhpFile) myFixture.configureByFile(
-            "TestWrongExtends.php"
+            "tests/TestWrongExtends.php"
         ));
         assertNull(phpClass);
 
         phpClass = Utils.getFirstTestClassFromFile((PhpFile) myFixture.configureByFile(
-            "TestWrongNamespace.php"
+            "tests/TestWrongNamespace.php"
         ));
         assertNull(phpClass);
+
+        phpClass = Utils.getFirstTestClassFromFile((PhpFile) myFixture.configureByFile(
+            "tests/TestCustomNamespaceAnnotation.php"
+        ));
+        assertNotNull(phpClass);
+        assertEquals("\\PhpStormPlugin\\toto\\tata\\TestCustomNamespaceAnnotation", phpClass.getFQN());
+
+        phpClass = Utils.getFirstTestClassFromFile((PhpFile) myFixture.configureByFile(
+            "tests/TestCustomNamespaceMethodCall.php"
+        ));
+        assertNotNull(phpClass);
+        assertEquals("\\PhpStormPlugin\\toto\\tata\\TestCustomNamespaceMethodCall", phpClass.getFQN());
+    }
+
+    public void testLocateTestClass()
+    {
+        PhpClass phpClass = Utils.getFirstClassFromFile((PhpFile) myFixture.configureByFile(
+            "src/TestSimpleClass.php"
+        ));
+        phpClass = Utils.locateTestClass(this.getProject(), phpClass);
+        assertNotNull(phpClass);
+        assertEquals("\\PhpStormPlugin\\tests\\units\\TestSimpleClass", phpClass.getFQN());
+
+        phpClass = Utils.getFirstClassFromFile((PhpFile) myFixture.configureByFile(
+            "src/TestCustomNamespaceAnnotation.php"
+        ));
+        phpClass = Utils.locateTestClass(this.getProject(), phpClass);
+        assertNotNull(phpClass);
+        assertEquals("\\PhpStormPlugin\\toto\\tata\\TestCustomNamespaceAnnotation", phpClass.getFQN());
+
+        phpClass = Utils.getFirstClassFromFile((PhpFile) myFixture.configureByFile(
+            "src/TestCustomNamespaceMethodCall.php"
+        ));
+        phpClass = Utils.locateTestClass(this.getProject(), phpClass);
+        assertNotNull(phpClass);
+        assertEquals("\\PhpStormPlugin\\toto\\tata\\TestCustomNamespaceMethodCall", phpClass.getFQN());
+
+        phpClass = Utils.getFirstClassFromFile((PhpFile) myFixture.configureByFile(
+            "src/TestClassWithoutTest.php"
+        ));
+        phpClass = Utils.locateTestClass(this.getProject(), phpClass);
+        assertNull(phpClass);
+    }
+
+    public void testLocateTestedClass()
+    {
+        PhpClass phpClass = Utils.getFirstClassFromFile((PhpFile) myFixture.configureByFile(
+            "tests/TestSimpleClass.php"
+        ));
+        phpClass = Utils.locateTestedClass(this.getProject(), phpClass);
+        assertNotNull(phpClass);
+        assertEquals("\\PhpStormPlugin\\TestSimpleClass", phpClass.getFQN());
+
+        phpClass = Utils.getFirstClassFromFile((PhpFile) myFixture.configureByFile(
+            "tests/TestCustomNamespaceAnnotation.php"
+        ));
+        phpClass = Utils.locateTestedClass(this.getProject(), phpClass);
+        assertNotNull(phpClass);
+        assertEquals("\\PhpStormPlugin\\TestCustomNamespaceAnnotation", phpClass.getFQN());
+
+        phpClass = Utils.getFirstClassFromFile((PhpFile) myFixture.configureByFile(
+            "tests/TestCustomNamespaceMethodCall.php"
+        ));
+        phpClass = Utils.locateTestedClass(this.getProject(), phpClass);
+        assertNotNull(phpClass);
+        assertEquals("\\PhpStormPlugin\\TestCustomNamespaceMethodCall", phpClass.getFQN());
     }
 }
