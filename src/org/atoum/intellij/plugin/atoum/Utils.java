@@ -1,6 +1,8 @@
 package org.atoum.intellij.plugin.atoum;
 
 import com.google.common.collect.Lists;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.php.PhpIndex;
@@ -97,5 +99,22 @@ public class Utils {
     public static PhpClass getFirstClassFromFile(PhpFile phpFile) {
         Collection<PhpClass> phpClasses = PsiTreeUtil.collectElementsOfType(phpFile, PhpClass.class);
         return phpClasses.size() == 0 ? null : phpClasses.iterator().next();
+    }
+
+    public static void saveFiles(PhpClass currentTestClass, Project project) {
+        FileDocumentManager fileDocumentManager = FileDocumentManager.getInstance();
+
+        Document documentTestClass = fileDocumentManager.getDocument(currentTestClass.getContainingFile().getVirtualFile());
+        if (documentTestClass != null) {
+            fileDocumentManager.saveDocument(documentTestClass);
+        }
+
+        PhpClass currentTestedClass = Utils.locateTestedClass(project, currentTestClass);
+        if (currentTestedClass != null) {
+            Document documentTestedClass = fileDocumentManager.getDocument(currentTestedClass.getContainingFile().getVirtualFile());
+            if (documentTestedClass != null) {
+                fileDocumentManager.saveDocument(documentTestedClass);
+            }
+        }
     }
 }

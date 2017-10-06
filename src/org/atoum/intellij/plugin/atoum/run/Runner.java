@@ -18,14 +18,17 @@ import com.intellij.execution.testframework.ui.BaseTestsOutputConsoleView;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+import com.intellij.openapi.actionSystem.ActionManager;
+import com.intellij.openapi.actionSystem.ActionToolbar;
+import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
-import com.intellij.psi.PsiDirectory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentManager;
 import com.jetbrains.php.config.PhpProjectConfigurationFacade;
@@ -34,6 +37,7 @@ import com.jetbrains.php.config.interpreters.PhpInterpreter;
 import com.jetbrains.php.run.PhpRunConfiguration;
 import com.jetbrains.php.run.PhpRunConfigurationFactoryBase;
 import org.atoum.intellij.plugin.atoum.AtoumUtils;
+import org.atoum.intellij.plugin.atoum.actions.RerunFailedTestsAction;
 import org.atoum.intellij.plugin.atoum.model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -137,13 +141,22 @@ public class Runner {
             commandLineBuilder.useConfigFile(phpstormConfigFile);
         }
 
+        ActionManager am = ActionManager.getInstance();
+        DefaultActionGroup buttonGroup = new DefaultActionGroup();
+        ActionToolbar viewToolbar = am.createActionToolbar("atoum.ConsoleToolbar", buttonGroup, false);
+
+        SimpleToolWindowPanel toolWindowPanel = new SimpleToolWindowPanel(false, true);
+        toolWindowPanel.setContent(testsOutputConsoleView.getComponent());
+        toolWindowPanel.setToolbar(viewToolbar.getComponent());
+
         ContentManager contentManager = toolWindow.getContentManager();
-        Content myContent;
-        myContent = toolWindow.getContentManager().getFactory().createContent(testsOutputConsoleView.getComponent(), "tests results", false);
-        toolWindow.getContentManager().removeAllContents(true);
-        toolWindow.getContentManager().addContent(myContent);
+        Content myContent = contentManager.getFactory().createContent(toolWindowPanel.getComponent(), "tests results", false);
+        contentManager.removeAllContents(true);
+        contentManager.addContent(myContent);
 
         final SMTRunnerConsoleView console = (SMTRunnerConsoleView)testsOutputConsoleView;
+
+        buttonGroup.add(new RerunFailedTestsAction(console.getResultsViewer().getTestsRootNode()));
 
         String[] commandLineArgs = commandLineBuilder.build();
 

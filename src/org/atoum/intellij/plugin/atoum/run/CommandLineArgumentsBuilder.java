@@ -1,6 +1,7 @@
 package org.atoum.intellij.plugin.atoum.run;
 
 import com.jetbrains.php.config.interpreters.PhpConfigurationOptionData;
+import com.jetbrains.php.lang.psi.elements.Method;
 import org.atoum.intellij.plugin.atoum.model.RunnerConfiguration;
 
 import java.io.File;
@@ -53,9 +54,9 @@ public class CommandLineArgumentsBuilder {
             this.commandLineArgs.add("-f");
             this.commandLineArgs.add(this.relativizePath(runnerConfiguration.getFile().getVirtualFile().getPath()));
         }
-        if (null != runnerConfiguration.getMethod()) {
+        for (Method method : runnerConfiguration.getMethods()) {
             this.commandLineArgs.add("-m");
-            this.commandLineArgs.add("*::" + runnerConfiguration.getMethod().getName());
+            this.commandLineArgs.add("*::" + method.getName());
         }
 
         return this;
