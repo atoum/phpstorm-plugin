@@ -2,9 +2,7 @@ package org.atoum.intellij.plugin.atoum;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.jetbrains.php.lang.psi.elements.ClassReference;
-import com.jetbrains.php.lang.psi.elements.NewExpression;
-import com.jetbrains.php.lang.psi.elements.PhpNamedElement;
+import com.jetbrains.php.lang.psi.elements.*;
 import com.jetbrains.php.lang.psi.resolve.types.PhpType;
 import com.jetbrains.php.lang.psi.resolve.types.PhpTypeProvider3;
 import org.jetbrains.annotations.Nullable;
@@ -28,6 +26,26 @@ public class MockTypeProvider implements PhpTypeProvider3 {
 
             if (ref != null && ref.getFQN() != null && ref.getFQN().startsWith("\\mock\\")) {
                 return new PhpType().add(ref.getFQN().substring("\\mock".length()));
+            }
+        } else if (psiElement instanceof MethodReference) {
+            MethodReference expr = (MethodReference) psiElement;
+            if (expr.getName() == null || !expr.getName().equals("newMockInstance")) {
+                return null;
+            }
+
+            if (expr.getParameters().length == 0) {
+                return null;
+            }
+
+            PsiElement param = expr.getParameters()[0];
+
+            if (param instanceof ClassConstantReference) {
+                PhpExpression ref = ((ClassConstantReference) param).getClassReference();
+                if (ref instanceof ClassReference) {
+                    return new PhpType().add(ref);
+                }
+            } else if (param instanceof StringLiteralExpression) {
+                return new PhpType().add(((StringLiteralExpression) param).getContents());
             }
         }
 
