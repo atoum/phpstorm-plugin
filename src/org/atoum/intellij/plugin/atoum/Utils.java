@@ -5,6 +5,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.php.PhpIndex;
 import com.jetbrains.php.lang.psi.PhpFile;
+import com.jetbrains.php.lang.psi.elements.ClassReference;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Nullable;
@@ -27,13 +28,26 @@ public class Utils {
         }
 
         // We also check if the class extends atoum
-        while (checkedClass.getSuperClass() != null) {
-            PhpClass parent = checkedClass.getSuperClass();
+        PhpClass loopCheckedClass = checkedClass;
+        while (loopCheckedClass.getSuperClass() != null) {
+            PhpClass parent = loopCheckedClass.getSuperClass();
             if (parent.getFQN().equals("\\atoum")) {
                 return true;
             }
-            checkedClass = parent;
+            loopCheckedClass = parent;
         }
+
+        // We try with another method to check, if the project does not have atoum/stubs
+        do {
+            List<ClassReference> extendsList = checkedClass.getExtendsList().getReferenceElements();
+            if (extendsList.iterator().hasNext()) {
+                ClassReference ref = extendsList.iterator().next();
+                if (ref.getFQN() != null && ref.getFQN().equals("\\atoum")) {
+                    return true;
+                }
+            }
+            checkedClass = checkedClass.getSuperClass();
+        } while (checkedClass != null);
 
         return false;
     }
