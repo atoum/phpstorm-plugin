@@ -4,13 +4,16 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.jetbrains.php.lang.psi.PhpFile;
 import com.jetbrains.php.lang.psi.elements.Method;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RunnerConfiguration {
 
     protected PhpFile file;
 
     protected VirtualFile directory;
 
-    protected Method method;
+    protected List<Method> methods = new ArrayList<>();
 
     public PhpFile getFile () {
         return file;
@@ -28,11 +31,11 @@ public class RunnerConfiguration {
         this.directory = directory;
     }
 
-    public void setMethod(Method method) {
-        this.method = method;
+    public void addMethod(Method method) {
+        this.methods.add(method);
     }
 
-    public Method getMethod () {
-        return method;
+    public List<Method> getMethods () {
+        return methods;
     }
 }

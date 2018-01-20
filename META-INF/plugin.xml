@@ -72,6 +72,8 @@
       <add-to-group group-id="RunMenu" anchor="last"/>
       <keyboard-shortcut first-keystroke="alt shift V" keymap="$default"/>
     </action>
+
+    <action id="RerunFailedTestsAction" class="org.atoum.intellij.plugin.atoum.actions.RerunFailedTestsAction" />
   </actions>
 
 

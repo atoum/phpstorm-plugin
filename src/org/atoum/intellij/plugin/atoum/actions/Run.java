@@ -4,8 +4,6 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.jetbrains.php.lang.psi.PhpFile;
@@ -42,23 +40,6 @@ public class Run extends AnAction {
         }
     }
 
-    protected void saveFiles(PhpClass currentTestClass, Project project) {
-        FileDocumentManager fileDocumentManager = FileDocumentManager.getInstance();
-
-        Document documentTestClass = fileDocumentManager.getDocument(currentTestClass.getContainingFile().getVirtualFile());
-        if (documentTestClass != null) {
-            fileDocumentManager.saveDocument(documentTestClass);
-        }
-
-        PhpClass currentTestedClass = Utils.locateTestedClass(project, currentTestClass);
-        if (currentTestedClass != null) {
-            Document documentTestedClass = fileDocumentManager.getDocument(currentTestedClass.getContainingFile().getVirtualFile());
-            if (documentTestedClass != null) {
-                fileDocumentManager.saveDocument(documentTestedClass);
-            }
-        }
-    }
-
     public void actionPerformed(final AnActionEvent e) {
         PhpClass currentTestClass = getCurrentTestClass(e);
         VirtualFile selectedDir = null;
@@ -73,12 +54,12 @@ public class Run extends AnAction {
 
         RunnerConfiguration runConfiguration = new RunnerConfiguration();
         if (null != currentTestClass) {
-            saveFiles(currentTestClass, project);
+            Utils.saveFiles(currentTestClass, project);
             runConfiguration.setFile((PhpFile)currentTestClass.getContainingFile());
 
             Method currentTestMethod = getCurrentTestMethod(e);
             if (currentTestMethod != null) {
-                runConfiguration.setMethod(currentTestMethod);
+                runConfiguration.addMethod(currentTestMethod);
             }
         }
 

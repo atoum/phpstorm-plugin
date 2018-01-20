@@ -10,10 +10,12 @@ public class MethodResult {
 
     protected String name;
     protected String content;
+    protected Integer failLineNumber;
 
-    public MethodResult(String name, String content) {
+    public MethodResult(String name, String content, Integer failLineNumber) {
         this.name = name;
         this.content = content;
+        this.failLineNumber = failLineNumber;
     }
 
     public void definedStatePassed() {
@@ -41,5 +43,10 @@ public class MethodResult {
     public String getState()
     {
         return this.state;
+    }
+
+    public Integer getFailLineNumber()
+    {
+        return this.failLineNumber;
     }
 }
