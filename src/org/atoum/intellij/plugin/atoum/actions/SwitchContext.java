@@ -21,7 +21,7 @@ public class SwitchContext extends AnAction {
             return;
         }
 
-        e.getPresentation().setText("atoum - switch to : " + testedClass.getFQN());
+        e.getPresentation().setText("atoum - switch to : " + testedClass.getFQN(), false);
         e.getPresentation().setEnabled(true);
     }
 

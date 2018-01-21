@@ -31,14 +31,14 @@ public class Run extends AnAction {
             event.getPresentation().setEnabled(true);
             Method currentTestMethod = getCurrentTestMethod(event);
             if (currentTestMethod != null) {
-                event.getPresentation().setText("atoum - run " + currentTestClass.getName() + "::" + currentTestMethod.getName());
+                event.getPresentation().setText("atoum - run " + currentTestClass.getName() + "::" + currentTestMethod.getName(), false);
             } else {
-                event.getPresentation().setText("atoum - run test : " + currentTestClass.getName());
+                event.getPresentation().setText("atoum - run test : " + currentTestClass.getName(), false);
             }
         } else {
             VirtualFile selectedDir = getCurrentTestDirectory(event);
             if (selectedDir != null) {
-                event.getPresentation().setText("atoum - run dir : " + selectedDir.getName());
+                event.getPresentation().setText("atoum - run dir : " + selectedDir.getName(), false);
                 event.getPresentation().setEnabled(true);
             }
         }
