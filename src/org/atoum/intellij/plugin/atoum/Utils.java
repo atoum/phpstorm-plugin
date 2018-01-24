@@ -1,13 +1,17 @@
 package org.atoum.intellij.plugin.atoum;
 
-import com.google.common.collect.Lists;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.php.PhpIndex;
+import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocComment;
+import com.jetbrains.php.lang.documentation.phpdoc.psi.tags.PhpDocTag;
 import com.jetbrains.php.lang.psi.PhpFile;
+import com.jetbrains.php.lang.psi.elements.Method;
+import com.jetbrains.php.lang.psi.elements.MethodReference;
 import com.jetbrains.php.lang.psi.elements.ClassReference;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
-import org.apache.commons.lang.StringUtils;
+import com.jetbrains.php.lang.psi.elements.StringLiteralExpression;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -19,8 +23,26 @@ public class Utils {
     public static Boolean isClassAtoumTest(PhpClass checkedClass)
     {
         // First, we check if the class is in the units tests namespace
-        if (!checkedClass.getNamespaceName().toLowerCase().contains(getTestsNamespaceSuffix().toLowerCase())) {
-            return false;
+        String testNamespaceSuffix = getTestsNamespaceSuffix(checkedClass);
+        if (testNamespaceSuffix != null) {
+            // this is in a custom test namespace, check if it is really in
+            if (!checkedClass.getNamespaceName().toLowerCase().contains(testNamespaceSuffix.toLowerCase())) {
+                return false;
+            }
+        } else {
+            // no custom namespace. We test all default possibilities
+            boolean found = false;
+            for (String defaultNamespace : getDefaultTestsNamespaces()) {
+                if (checkedClass.getNamespaceName().toLowerCase().contains(defaultNamespace)) {
+                    found = true;
+                    break;
+                }
+            }
+
+            // None of the default namespace matched, not a test class
+            if (!found) {
+                return false;
+            }
         }
 
         if (checkedClass.isAbstract() || checkedClass.isInterface()) {
@@ -64,24 +86,27 @@ public class Utils {
 
     @Nullable
     public static Collection<PhpClass> locateTestClasses(Project project, PhpClass testedClass) {
-        if (testedClass.getNamespaceName().length() == 1) {
-            Collection<PhpClass> foundClasses = locatePhpClasses(project, getTestsNamespaceSuffix() + testedClass.getName());
-            if (foundClasses.size() > 0) {
-                return foundClasses;
+        // Search classes with same name
+        for (PhpClass similarClass : PhpIndex.getInstance(project).getClassesByName(testedClass.getName())) {
+            // Skip testedClass
+            if (similarClass.getFQN().equals(testedClass.getFQN())) {
+                continue;
             }
-        }
 
-        String[] namespaceParts = testedClass.getNamespaceName().split("\\\\");
-
-        for(int i=namespaceParts.length; i>=1; i--){
-            List<String> foo = Lists.newArrayList(namespaceParts);
-            foo.add(i, getTestsNamespaceSuffix().substring(0, getTestsNamespaceSuffix().length() - 1));
-
-            String possibleClassname = StringUtils.join(foo, "\\") + "\\" + testedClass.getName();
-            Collection<PhpClass> foundClasses = locatePhpClasses(project, possibleClassname);
-            if (foundClasses.size() > 0) {
-                return foundClasses;
+            // Skip classes which don't have the same base namespace
+            if (!similarClass.getNamespaceName().startsWith(testedClass.getNamespaceName())) {
+                continue;
             }
+
+            // Skip non atoum classes
+            if (!isClassAtoumTest(similarClass)) {
+                continue;
+            }
+
+            ArrayList<PhpClass> data = new ArrayList<>();
+            data.add(similarClass);
+
+            return data;
         }
 
         return new ArrayList<PhpClass>();
@@ -97,11 +122,36 @@ public class Utils {
         return null;
     }
 
-    @Nullable
     public static Collection<PhpClass> locateTestedClasses(Project project, PhpClass testClass) {
-        String testClassNamespaceName = testClass.getNamespaceName();
-        String testedClassname = testClassNamespaceName.toLowerCase().replace(getTestsNamespaceSuffix().toLowerCase(), "") + testClass.getName();
-        return locatePhpClasses(project, testedClassname);
+        String testClassNamespaceName = testClass.getNamespaceName().toLowerCase();
+        String testNamespaceSuffix = getTestsNamespaceSuffix(testClass);
+
+        if (testNamespaceSuffix != null) {
+            // it's a custom namespace. Ensure the class is really in this namespace
+            if (!testClassNamespaceName.contains(testNamespaceSuffix.toLowerCase())) {
+                return new ArrayList<>();
+            }
+
+            String testedClassname = testClassNamespaceName.replace(testNamespaceSuffix.toLowerCase(), "") + testClass.getName();
+
+            return locatePhpClasses(project, testedClassname);
+        }
+
+        // Try with default namespaces
+        for (String defaultNamespace : getDefaultTestsNamespaces()) {
+            if (!testClassNamespaceName.contains(defaultNamespace)) {
+                continue;
+            }
+
+            String testedClassname = testClassNamespaceName.replace(defaultNamespace, "") + testClass.getName();
+
+            Collection<PhpClass> items = locatePhpClasses(project, testedClassname);
+            if (!items.isEmpty()) {
+                return items;
+            }
+        }
+
+        return new ArrayList<>();
     }
 
     @Nullable
@@ -114,14 +164,91 @@ public class Utils {
         return (PhpClass)phpClasses.toArray()[0];
     }
 
-    @Nullable
     protected static Collection<PhpClass> locatePhpClasses(Project project, String name) {
         return PhpIndex.getInstance(project).getAnyByFQN(name);
     }
 
-    private static String getTestsNamespaceSuffix()
+    @Nullable
+    private static String getTestsNamespaceSuffix(PhpClass phpClass)
     {
-        return "tests\\units\\";
+        while (phpClass != null) {
+            // Check @namespace annotation in the class
+            PhpDocComment docComment = phpClass.getDocComment();
+            if (docComment != null) {
+                PhpDocTag[] tags = docComment.getTagElementsByName("@namespace");
+
+                if (tags.length > 0) {
+                    return checkBackslashes(tags[0].getTagValue());
+                }
+            }
+
+            // Check setTestNamespace call in __construct
+            Method constructor = phpClass.getOwnConstructor();
+            if (constructor != null) {
+                MethodReference setTestNamespaceCall = findMethodCallInElement(constructor, "setTestNamespace");
+
+                if (setTestNamespaceCall != null && setTestNamespaceCall.getParameters().length > 0) {
+                    PsiElement callParameter = setTestNamespaceCall.getParameters()[0];
+
+                    if (callParameter instanceof StringLiteralExpression) {
+                        return checkBackslashes(((StringLiteralExpression) callParameter).getContents());
+                    }
+                }
+            }
+
+            // Not found? Try with parent class
+            phpClass = phpClass.getSuperClass();
+        }
+
+        // Return null to use default value if no @namespace or $this->setTestNamespace() were found
+        return null;
+    }
+
+    // Always return lowercase namespaces
+    private static String[] getDefaultTestsNamespaces()
+    {
+        return new String[] {
+            "tests\\units\\",
+            "test\\unit\\",
+        };
+    }
+
+    /**
+     * Ensure namespace doesn't start with \ but ends with \
+     */
+    private static String checkBackslashes(String namespace)
+    {
+        if (namespace.startsWith("\\")) {
+            namespace = namespace.substring(1);
+        }
+
+        if (!namespace.endsWith("\\")) {
+            namespace += "\\";
+        }
+
+        return namespace;
+    }
+
+    @Nullable
+    private static MethodReference findMethodCallInElement(PsiElement element, String name)
+    {
+        for (PsiElement child : element.getChildren())
+        {
+            if (child instanceof MethodReference) {
+                MethodReference method = (MethodReference) child;
+
+                if (method.getName() != null && method.getName().equals(name)) {
+                    return method;
+                }
+            }
+
+            MethodReference result = findMethodCallInElement(child, name);
+            if (result != null) {
+                return result;
+            }
+        }
+
+        return null;
     }
 
     //https://github.com/Haehnchen/idea-php-symfony2-plugin/blob/cb422db9779025d65fdf0ba5d26a38d401eca939/src/fr/adrienbrault/idea/symfony2plugin/util/PhpElementsUtil.java#L784
