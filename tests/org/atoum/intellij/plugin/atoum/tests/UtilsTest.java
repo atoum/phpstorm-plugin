@@ -152,6 +152,13 @@ public class UtilsTest extends LightCodeInsightFixtureTestCase {
         assertEquals("\\PhpStormPlugin\\toto\\tata\\TestCustomNamespaceMethodCall", phpClass.getFQN());
 
         phpClass = Utils.getFirstClassFromFile((PhpFile) myFixture.configureByFile(
+            "src/TestNamespaceUppercaseSingular.php"
+        ));
+        phpClass = Utils.locateTestClass(this.getProject(), phpClass);
+        assertNotNull(phpClass);
+        assertEquals("\\PhpStormPlugin\\test\\UNIT\\TestNamespaceUppercaseSingular", phpClass.getFQN());
+
+        phpClass = Utils.getFirstClassFromFile((PhpFile) myFixture.configureByFile(
             "src/TestClassWithoutTest.php"
         ));
         phpClass = Utils.locateTestClass(this.getProject(), phpClass);
@@ -183,5 +190,12 @@ public class UtilsTest extends LightCodeInsightFixtureTestCase {
         phpClass = Utils.locateTestedClass(this.getProject(), phpClass);
         assertNotNull(phpClass);
         assertEquals("\\PhpStormPlugin\\TestCustomNamespaceMethodCall", phpClass.getFQN());
+
+        phpClass = Utils.getFirstClassFromFile((PhpFile) myFixture.configureByFile(
+            "tests/TestNamespaceUppercaseSingular.php"
+        ));
+        phpClass = Utils.locateTestedClass(this.getProject(), phpClass);
+        assertNotNull(phpClass);
+        assertEquals("\\PhpStormPlugin\\TestNamespaceUppercaseSingular", phpClass.getFQN());
     }
 }

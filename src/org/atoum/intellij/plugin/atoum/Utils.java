@@ -23,8 +23,26 @@ public class Utils {
     public static Boolean isClassAtoumTest(PhpClass checkedClass)
     {
         // First, we check if the class is in the units tests namespace
-        if (!checkedClass.getNamespaceName().toLowerCase().contains(getTestsNamespaceSuffix(checkedClass).toLowerCase())) {
-            return false;
+        String testNamespaceSuffix = getTestsNamespaceSuffix(checkedClass);
+        if (testNamespaceSuffix != null) {
+            // this is in a custom test namespace, check if it is really in
+            if (!checkedClass.getNamespaceName().toLowerCase().contains(testNamespaceSuffix.toLowerCase())) {
+                return false;
+            }
+        } else {
+            // no custom namespace. We test all default possibilities
+            boolean found = false;
+            for (String defaultNamespace : getDefaultTestsNamespaces()) {
+                if (checkedClass.getNamespaceName().toLowerCase().contains(defaultNamespace)) {
+                    found = true;
+                    break;
+                }
+            }
+
+            // None of the default namespace matched, not a test class
+            if (!found) {
+                return false;
+            }
         }
 
         if (checkedClass.isAbstract() || checkedClass.isInterface()) {
@@ -104,12 +122,36 @@ public class Utils {
         return null;
     }
 
-    @Nullable
     public static Collection<PhpClass> locateTestedClasses(Project project, PhpClass testClass) {
-        String testClassNamespaceName = testClass.getNamespaceName();
-        String testedClassname = testClassNamespaceName.toLowerCase().replace(getTestsNamespaceSuffix(testClass).toLowerCase(), "") + testClass.getName();
+        String testClassNamespaceName = testClass.getNamespaceName().toLowerCase();
+        String testNamespaceSuffix = getTestsNamespaceSuffix(testClass);
 
-        return locatePhpClasses(project, testedClassname);
+        if (testNamespaceSuffix != null) {
+            // it's a custom namespace. Ensure the class is really in this namespace
+            if (!testClassNamespaceName.contains(testNamespaceSuffix.toLowerCase())) {
+                return new ArrayList<>();
+            }
+
+            String testedClassname = testClassNamespaceName.replace(testNamespaceSuffix.toLowerCase(), "") + testClass.getName();
+
+            return locatePhpClasses(project, testedClassname);
+        }
+
+        // Try with default namespaces
+        for (String defaultNamespace : getDefaultTestsNamespaces()) {
+            if (!testClassNamespaceName.contains(defaultNamespace)) {
+                continue;
+            }
+
+            String testedClassname = testClassNamespaceName.replace(defaultNamespace, "") + testClass.getName();
+
+            Collection<PhpClass> items = locatePhpClasses(project, testedClassname);
+            if (!items.isEmpty()) {
+                return items;
+            }
+        }
+
+        return new ArrayList<>();
     }
 
     @Nullable
@@ -122,11 +164,11 @@ public class Utils {
         return (PhpClass)phpClasses.toArray()[0];
     }
 
-    @Nullable
     protected static Collection<PhpClass> locatePhpClasses(Project project, String name) {
         return PhpIndex.getInstance(project).getAnyByFQN(name);
     }
 
+    @Nullable
     private static String getTestsNamespaceSuffix(PhpClass phpClass)
     {
         while (phpClass != null) {
@@ -158,8 +200,17 @@ public class Utils {
             phpClass = phpClass.getSuperClass();
         }
 
-        // Default value if no @namespace or $this->setTestNamespace() were found
-        return "tests\\units\\";
+        // Return null to use default value if no @namespace or $this->setTestNamespace() were found
+        return null;
+    }
+
+    // Always return lowercase namespaces
+    private static String[] getDefaultTestsNamespaces()
+    {
+        return new String[] {
+            "tests\\units\\",
+            "test\\unit\\",
+        };
     }
 
     /**
