@@ -2,9 +2,7 @@
 
 namespace PhpStormPlugin\tests\units;
 
-use \atoum;
-
-class TestA extends atoum
+class TestSimpleClassWithoutUse extends \atoum
 {
 
 }

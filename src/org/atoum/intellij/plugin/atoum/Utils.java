@@ -5,6 +5,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.php.PhpIndex;
 import com.jetbrains.php.lang.psi.PhpFile;
+import com.jetbrains.php.lang.psi.elements.ClassReference;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Nullable;
@@ -17,7 +18,38 @@ public class Utils {
 
     public static Boolean isClassAtoumTest(PhpClass checkedClass)
     {
-        return checkedClass.getNamespaceName().toLowerCase().contains(getTestsNamespaceSuffix().toLowerCase());
+        // First, we check if the class is in the units tests namespace
+        if (!checkedClass.getNamespaceName().toLowerCase().contains(getTestsNamespaceSuffix().toLowerCase())) {
+            return false;
+        }
+
+        if (checkedClass.isAbstract() || checkedClass.isInterface()) {
+            return false;
+        }
+
+        // We also check if the class extends atoum
+        PhpClass loopCheckedClass = checkedClass;
+        while (loopCheckedClass.getSuperClass() != null) {
+            PhpClass parent = loopCheckedClass.getSuperClass();
+            if (parent.getFQN().equals("\\atoum")) {
+                return true;
+            }
+            loopCheckedClass = parent;
+        }
+
+        // We try with another method to check, if the project does not have atoum/stubs
+        do {
+            List<ClassReference> extendsList = checkedClass.getExtendsList().getReferenceElements();
+            if (extendsList.iterator().hasNext()) {
+                ClassReference ref = extendsList.iterator().next();
+                if (ref.getFQN() != null && ref.getFQN().equals("\\atoum")) {
+                    return true;
+                }
+            }
+            checkedClass = checkedClass.getSuperClass();
+        } while (checkedClass != null);
+
+        return false;
     }
 
     @Nullable
@@ -97,5 +129,18 @@ public class Utils {
     public static PhpClass getFirstClassFromFile(PhpFile phpFile) {
         Collection<PhpClass> phpClasses = PsiTreeUtil.collectElementsOfType(phpFile, PhpClass.class);
         return phpClasses.size() == 0 ? null : phpClasses.iterator().next();
+    }
+
+    @Nullable
+    public static PhpClass getFirstTestClassFromFile(PhpFile phpFile) {
+        Collection<PhpClass> phpClasses = PsiTreeUtil.collectElementsOfType(phpFile, PhpClass.class);
+
+        for (PhpClass phpClass:phpClasses) {
+            if (isClassAtoumTest(phpClass)) {
+                return phpClass;
+            }
+        }
+
+        return null;
     }
 }

@@ -126,16 +126,21 @@ public class Run extends AnAction {
         }
         PhpFile phpFile = ((PhpFile) psiFile);
 
-        PhpClass currentClass = Utils.getFirstClassFromFile(phpFile);
+        PhpClass currentClass = Utils.getFirstTestClassFromFile(phpFile);
+
+        if (currentClass != null) {
+            // The file contains a test class, use it
+            return currentClass;
+        }
+
+        // There is no tests in this file, maybe this is a php class
+        currentClass = Utils.getFirstClassFromFile(phpFile);
         if (null == currentClass) {
             return null;
         }
 
-        if (!Utils.isClassAtoumTest(currentClass)) {
-            return Utils.locateTestClass(e.getProject(), currentClass);
-        }
-
-        return currentClass;
+        // This is a PHP class, find its test
+        return Utils.locateTestClass(e.getProject(), currentClass);
     }
 
     @Nullable
