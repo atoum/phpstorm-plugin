@@ -1,6 +1,13 @@
 <?php
 
-class atoum
+namespace atoum
+{
+    class test
+    {
+    }
+}
+
+class atoum extends atoum\test
 {
 
 }

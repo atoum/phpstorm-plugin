@@ -31,7 +31,7 @@ public class Utils {
         PhpClass loopCheckedClass = checkedClass;
         while (loopCheckedClass.getSuperClass() != null) {
             PhpClass parent = loopCheckedClass.getSuperClass();
-            if (parent.getFQN().equals("\\atoum")) {
+            if (parent.getFQN().equals("\\atoum") || parent.getFQN().equals("\\atoum\\test")) {
                 return true;
             }
             loopCheckedClass = parent;
@@ -42,7 +42,7 @@ public class Utils {
             List<ClassReference> extendsList = checkedClass.getExtendsList().getReferenceElements();
             if (extendsList.iterator().hasNext()) {
                 ClassReference ref = extendsList.iterator().next();
-                if (ref.getFQN() != null && ref.getFQN().equals("\\atoum")) {
+                if (ref.getFQN() != null && (ref.getFQN().equals("\\atoum") || ref.getFQN().equals("\\atoum\\test"))) {
                     return true;
                 }
             }
