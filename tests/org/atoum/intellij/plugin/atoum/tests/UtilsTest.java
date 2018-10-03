@@ -37,6 +37,12 @@ public class UtilsTest extends LightCodeInsightFixtureTestCase {
         assertEquals("\\PhpStormPlugin\\tests\\units\\TestSimpleClass", phpClass.getFQN());
 
         phpClass = Utils.getFirstTestClassFromFile((PhpFile) myFixture.configureByFile(
+                "TestSimpleClass2.php"
+        ));
+        assertNotNull(phpClass);
+        assertEquals("\\PhpStormPlugin\\tests\\units\\TestSimpleClass2", phpClass.getFQN());
+
+        phpClass = Utils.getFirstTestClassFromFile((PhpFile) myFixture.configureByFile(
             "TestMultipleClassNotFirst.php"
         ));
         assertNotNull(phpClass);
@@ -47,6 +53,12 @@ public class UtilsTest extends LightCodeInsightFixtureTestCase {
         ));
         assertNotNull(phpClass);
         assertEquals("\\PhpStormPlugin\\tests\\units\\TestSimpleClassWithoutUse", phpClass.getFQN());
+
+        phpClass = Utils.getFirstTestClassFromFile((PhpFile) myFixture.configureByFile(
+                "TestSimpleClassWithoutUse2.php"
+        ));
+        assertNotNull(phpClass);
+        assertEquals("\\PhpStormPlugin\\tests\\units\\TestSimpleClassWithoutUse2", phpClass.getFQN());
 
         phpClass = Utils.getFirstTestClassFromFile((PhpFile) myFixture.configureByFile(
             "TestWithParentClass.php"
@@ -73,6 +85,12 @@ public class UtilsTest extends LightCodeInsightFixtureTestCase {
         assertEquals("\\PhpStormPlugin\\tests\\units\\TestSimpleClass", phpClass.getFQN());
 
         phpClass = Utils.getFirstTestClassFromFile((PhpFile) myFixture.configureByFile(
+                "TestSimpleClass2.php"
+        ));
+        assertNotNull(phpClass);
+        assertEquals("\\PhpStormPlugin\\tests\\units\\TestSimpleClass2", phpClass.getFQN());
+
+        phpClass = Utils.getFirstTestClassFromFile((PhpFile) myFixture.configureByFile(
                 "TestMultipleClassNotFirst.php"
         ));
         assertNotNull(phpClass);
@@ -83,6 +101,12 @@ public class UtilsTest extends LightCodeInsightFixtureTestCase {
         ));
         assertNotNull(phpClass);
         assertEquals("\\PhpStormPlugin\\tests\\units\\TestSimpleClassWithoutUse", phpClass.getFQN());
+
+        phpClass = Utils.getFirstTestClassFromFile((PhpFile) myFixture.configureByFile(
+                "TestSimpleClassWithoutUse2.php"
+        ));
+        assertNotNull(phpClass);
+        assertEquals("\\PhpStormPlugin\\tests\\units\\TestSimpleClassWithoutUse2", phpClass.getFQN());
 
         phpClass = Utils.getFirstTestClassFromFile((PhpFile) myFixture.configureByFile(
                 "TestWithParentClass.php"
